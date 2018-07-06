@@ -26,8 +26,20 @@ for f1 in sys.argv[1:]:
 		corr[sampleA][sampleB]=r
 
 df = pd.DataFrame.from_dict(corr)
+
+
+lut=[]
+for sample in df.columns.values:
+        if "2014" in sample: lut.append('r')
+        elif "2015" in sample: lut.append('b')
+        elif "2016" in sample: lut.append('g')
+        elif "2017" in sample: lut.append('c')
+	else: lut.append('w')
+
+
+
 #sns.heatmap(df)
-sns.clustermap(df, col_cluster=True)
+sns.clustermap(df, col_cluster=True, col_colors=lut, row_colors=lut, robust=True)
 
 
 plt.show()

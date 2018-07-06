@@ -11,21 +11,20 @@ samples=["2014", "2015", "2016", "2017"]
 
 data={}
 for sampleA in samples:
-	for sampleB in samples:
-		if sampleA==sampleB: continue
-		if int(sampleA)>int(sampleB): continue
-		else:
-			f=sampleA+"_"+sampleB+".tab"
-			A=[]
-			B=[]
-			for line in open(f):
-				cut=line.strip().split("\t")
-				a=float(cut[0])
-				b=float(cut[1])
-				A.append(a)
-				B.append(b)
-			#axarr[x,y].set_yscale('log')
-			data[sampleA+"->"+sampleB] = B
+	sampleB=str(int(sampleA)+1)
+	if sampleA=="2017": sampleB="2014"
+	#if int(sampleA)>int(sampleB): continue
+	f=sampleA+"_"+sampleB+".tab"
+	A=[]
+	B=[]
+	for line in open(f):
+		cut=line.strip().split("\t")
+		a=float(cut[0])
+		b=float(cut[1])
+		A.append(a)
+		B.append(b)
+	#axarr[x,y].set_yscale('log')
+	data[sampleA+"->"+sampleB] = B
 
 
 
