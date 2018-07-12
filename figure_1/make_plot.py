@@ -11,7 +11,7 @@ sns.set_color_codes()
 import operator as op
 import numpy as np
 import math
-
+from PIL import Image
 
 #standardize each sample to number of reads in each sample (to 10000 reads per sample)
 def standardize_otu_table(df, reads):
@@ -159,6 +159,16 @@ def draw_archaea_percent(data1, data2, ax):
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
 
 
+def draw_clustermap(filename, ax, v, h):
+	im = Image.open(filename)
+	plt.figimage(im, h, v)
+	ax.axis("off")
+	ax.set_title("Dissimilarity clustering (Site A)")
+	legend_elements = [Patch(facecolor='red', edgecolor='k', label='2014-09'), 
+		Patch(facecolor='yellow', edgecolor='k', label='2015-06'),
+		Patch(facecolor='cyan', edgecolor='k', label='2016-02'),
+		Patch(facecolor='magenta', edgecolor='k', label='2017-02')]
+	ax.legend(handles=legend_elements, loc=[-0.05, -0.13], framealpha=1, frameon=True, facecolor='w', ncol=4, columnspacing=0.5, handlelength=1)
 
 
 
@@ -168,23 +178,29 @@ def draw_archaea_percent(data1, data2, ax):
 # main figure layout:
 plt.rc('font', family='sans-serif')
 sns.set_palette("husl")
-#sns.set_style("darkgrid")
-fig = plt.figure(figsize=(16, 10))
-outer = gridspec.GridSpec(3, 1, wspace=0.15, hspace=0.5, height_ratios=[2,1,1], width_ratios=[1])
+sns.set_style("dark")
+fig = plt.figure(figsize=(16, 11))
+outer = gridspec.GridSpec(3, 1, wspace=0.15, hspace=0.6, height_ratios=[2,1,1], width_ratios=[1])
 
 
-for i, label in enumerate(['TOP PANEL','D','E']):
+for i, label in enumerate(['TOP PANEL','MIDDLE','BOTTOM']):
 	if label=="TOP PANEL":
 		# make other figures in top row
-		inner = gridspec.GridSpecFromSubplotSpec(1, 3, subplot_spec=outer[i], wspace=0.2)
+		inner = gridspec.GridSpecFromSubplotSpec(1, 3, subplot_spec=outer[i], wspace=0.2, width_ratios=[1,0.7,1])
 		for j, panel in enumerate(['A', 'B','C']):
 			ax = plt.Subplot(fig, inner[j])
 			ax.annotate(panel, xy=(-0.1, 1.1), xycoords="axes fraction", fontsize=16)
-			if panel=='A':
+			if panel=="A":
 				print "making PCoA plot..."
 				PC1_expl,PC2_expl,PC1,PC2,labels = load_pca_coord("weighted_unifrac_pcoa.txt")
 				df = convert_lists_to_df(PC1, PC2, labels)
 				draw_pcoa(PC1_expl, PC2_expl, df, ax)
+			if panel=="B":
+				print "making clustermap plot..."
+				os.system("python clustermap.py weighted_unifrac_matrix.tab 4.2")
+				vertical=660
+ 				horisontal=650
+				draw_clustermap("clustermap.png", ax, vertical, horisontal)
 			if panel=="C":
 				print "making Archaea abundance plot..."
 				inputfile1="siteA_otu_table.tab"
@@ -197,10 +213,10 @@ for i, label in enumerate(['TOP PANEL','D','E']):
 
 			fig.add_subplot(ax)
 
-	if label=="D" or label=="E":
+	if label=="MIDDLE" or label=="BOTTOM":
 		# make phyla abundance figures
-		if label=='D': inputfile="siteA_otu_table.tab"
-		if label=='E': inputfile="siteB_otu_table.tab"
+		if label=='MIDDLE': inputfile="siteA_otu_table.tab"
+		if label=='BOTTOM': inputfile="siteB_otu_table.tab"
 		print "making phyla abundance plot ("+inputfile+")..."
 	
 		rank_of_interest=2
@@ -212,15 +228,19 @@ for i, label in enumerate(['TOP PANEL','D','E']):
 			taxa_data[taxa]=load_taxa_data(df, taxa)
 
 		inner = gridspec.GridSpecFromSubplotSpec(1, len(taxa_of_interest), subplot_spec=outer[i], wspace=0.3)
+		alphabet=["A","B","C","D","E","F","G","H","I","J","K","L"]; pos=3
 		for j, taxa in enumerate(taxa_data):
 			ax = plt.Subplot(fig, inner[j])
-			if j==0: ax.annotate(label, xy=(-0.3, 1.1), xycoords="axes fraction", fontsize=16)
+			ax.annotate(alphabet[pos], xy=(-0.1, 1.1), xycoords="axes fraction", fontsize=16)
+			pos+=1
 			data=taxa_data[taxa]
 			draw_boxplots(data, taxa, ax, i)
-			if j==0: ax.set_ylabel("Relative abundance")
+			if j==0 and label=="MIDDLE": ax.set_ylabel("Abundance (%) in Site A")
+			if j==0 and label=="BOTTOM": ax.set_ylabel("Abundance (%) in Site B")
 			fig.add_subplot(ax)
 
-plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)
+plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
+plt.savefig("figure_1.png")
 plt.show()
 
 
