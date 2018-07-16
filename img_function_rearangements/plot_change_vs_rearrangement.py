@@ -149,8 +149,8 @@ def compute_differences_between_two_samples(sample_A, sample_B):
 			total_abundance_B += abund_B
 	
 		total_change = scaled_fold(total_abundance_A, total_abundance_B)
-		rearangement = np.mean(indiv_change)
-		#rearangement = weighted_average(indiv_change, contig_weights)
+		#rearangement = np.mean(indiv_change)
+		rearangement = weighted_average(indiv_change, contig_weights)
 		#rearangement = weighted_average(indiv_change, contig_weights) - np.absolute(total_change)
 
 		functions.append(function)
@@ -160,6 +160,9 @@ def compute_differences_between_two_samples(sample_A, sample_B):
 	
 	for i in range(len(total_abund)):
 		total_abund[i]=50*total_abund[i]/max(total_abund)
+
+	print "Average rearangement index = " + str(weighted_average(rearangements, total_abund)) + "+/-" + str(weighted_stdev(rearangements, total_abund))
+	
 	return functions, total_changes, rearangements, total_abund
 
 
