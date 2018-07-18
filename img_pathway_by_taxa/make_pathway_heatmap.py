@@ -69,8 +69,13 @@ def find_pathway_carriers(file_name):
 
 		paths=cut[4].split("|")
 		for path in paths:
-			path=";".join(path.split(";")[:2])
-			#path=";".join(path.split(";")[:3])
+			cut_path=path.split(";")
+			if cut_path[0]=="Metabolism": continue
+
+			#path=";".join(cut_path[:2])
+			#path=";".join(cut_path[:3])
+			path=";".join(cut_path[1:3])
+
 			if path not in function_carriers:
 				function_carriers[path]=[cut[0].split("-")[0]]
 			else:
@@ -118,7 +123,7 @@ def remove_stoic_pathways(pathway_abundances):
 	return df
 
 
-def plot_even_clustermap(df):
+def plot_even_clustermap(df, log):
 	print "plotting clustermap..."
 	lut=[]
 	for sample in df.columns.values:
@@ -126,8 +131,14 @@ def plot_even_clustermap(df):
 		if "2015" in sample: lut.append('g')
 		if "2016" in sample: lut.append('b')
 		if "2017" in sample: lut.append('c')
-	df = df.div(df.max(axis=1), axis=0)
-	g = sns.clustermap(df, col_cluster=True, col_colors=lut, cmap="Blues", figsize=(12,8), vmin=0, vmax=1)
+
+	if log==False:
+		df = df.div(df.max(axis=1), axis=0)
+		g = sns.clustermap(df, col_cluster=True, col_colors=lut, cmap="Blues", figsize=(12,12), vmin=0, vmax=1)
+	if log==True:
+		df=df+0.01
+		df = np.log(df)
+		g = sns.clustermap(df, col_cluster=True, col_colors=lut, cmap="Blues", figsize=(12,12))
 
 	plt.subplots_adjust(left=0.05, bottom=0.1, right=0.6, top=0.95)
 	plt.setp(g.ax_heatmap.get_xticklabels(), rotation=90)
@@ -154,7 +165,8 @@ function_carriers = find_pathway_carriers("img_annotation.master")
 if len(sys.argv)>1: function_carriers = select_taxonomy_contigs(function_carriers, taxonomy, sys.argv[1])
 pathway_abundances = get_pathway_abundances(function_carriers, depths)
 differential_pathways = remove_stoic_pathways(pathway_abundances)
-plot_even_clustermap(differential_pathways)
+differential_pathways.to_csv("differential_pathways.tab", sep='\t')
+plot_even_clustermap(differential_pathways, False)
 
 
 

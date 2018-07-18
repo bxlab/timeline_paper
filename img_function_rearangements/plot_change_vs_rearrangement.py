@@ -82,7 +82,12 @@ def standardize_contig_depths(depths, samples, contigs):
 
 	return depths
 
-
+def write_to_file(filename, list1, list2):
+	file = open(filename, 'w') 
+	file.write("#abundance\trearangement\n")
+ 	for i, a in enumerate(list1):
+		file.write(str(a)+"\t"+str(list2[i])+"\n")
+	file.close()
 
 def find_gene_product_carriers(file_name):
 	print "finding which contigs carry each gene product..."
@@ -202,6 +207,7 @@ if len(sys.argv)>1:
 
 	# plot y-axis violin
 	y_vio = fig.add_subplot(grid[1:, -1], xticklabels=[], yticklabels=[])
+	write_to_file(sys.argv[1]+"-"+sys.argv[2]+".tab", abundances, rearangements)
 	y_vio = sns.violinplot(y=artificial_std(rearangements, abundances))
 	y_vio.set_ylim(0,1)
 	for ymaj in y_vio.yaxis.get_majorticklocs(): y_vio.axhline(y=ymaj, ls='--', alpha=0.3, c='k', linewidth=0.5)

@@ -1,17 +1,22 @@
 #!/usr/bin/env python
-print "loading python packages"
+print "loading python packages..."
 import sys, getopt, os
 import pandas as pd
 import scipy.stats as stats
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.patches import Patch
+from matplotlib.cbook import get_sample_data
 import seaborn as sns
 sns.set_color_codes()
 import operator as op
 import numpy as np
 import math
 from PIL import Image
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from matplotlib.colors import LogNorm
+
 
 #standardize each sample to number of reads in each sample (to 10000 reads per sample)
 def standardize_otu_table(df, reads):
@@ -59,116 +64,111 @@ def load_otu_data(inputfile, rank_of_interest):
 	return df
 	
 
-def load_pca_coord(filename):
-	pc1=[]; pc2=[]; labels=[]	
-	for i,line in enumerate(open(filename)):
-		cut=line.strip().split("\t")
-		if i==4:
-			expl_1=float(cut[0])
-			expl_2=float(cut[1])
-		if i>8:
-			if len(cut)<10: continue
-			pc1.append(float(cut[1]))
-			pc2.append(float(cut[2]))
-			labels.append("-".join(cut[0].split("-")[2:4])[:7])
-	return expl_1,expl_2,pc1,pc2,labels
+def calculate_pca(data):
+	standard = StandardScaler()
+	Data_SArray = standard.fit_transform(data)
+	Data_Standard = pd.DataFrame(Data_SArray)
 
+	samples=list(data.index.values)
+	indeces=list(Data_Standard.index.values)
+	mapper = dict(zip(indeces, samples))
+	df=Data_Standard.rename(index=mapper)
 
-def convert_lists_to_df(x,y,labels):
-	df = pd.DataFrame({'labels': labels,'x': x,'y': y})
+	pca = PCA(n_components=2)
+	principalComponents = pca.fit_transform(df)
+	principalDf = pd.DataFrame(data = principalComponents, columns = ['component_1', 'component_2'])
+
+	df = df.reset_index()
+	finalDf = pd.concat([principalDf, df[["index"]]], axis = 1)
+	var = pca.explained_variance_ratio_
+	return finalDf, var, samples
+
+def convert_wideform_to_longform(dictionary):
+	df={"x":[], "y":[]}
+	for key in sorted(dictionary):
+		for element in dictionary[key]:
+			df["x"].append(key.split("-")[0])
+			df["y"].append(element)
 	return df
 
 
-def draw_boxplots(data, taxa, ax, position):
-	keys=[]; values=[]; pal={}
-	for i, key in enumerate(sorted(data)):
-		keys.append(key)
-		values.append(data[key])
-		if key=="2014-09" or key=="2015-06":
-			pal[i]='yellow'
-		else:
-			pal[i]='cyan'
-
-	sns.boxplot(data=values, width=0.60, linewidth=1, ax=ax, palette=pal)
-	sns.swarmplot(data=values, size=3, edgecolor="black", linewidth=1, ax=ax, palette=pal)
-
-	ax.set_xticklabels(keys)
-	for tick in ax.get_xticklabels(): tick.set_rotation(45)
-
-	for spine in ax.spines.values(): spine.set_alpha(0.2)
-
-	if taxa=="Cytophagia": taxa="Bacteroidetes"
-	if position==1 or position==0: ax.set_title(taxa)
-
-
-def draw_pcoa(PC1_expl, PC2_expl, df, ax):
-	plots={}
-	for i,label in enumerate(df["labels"]):
-		if "2014" in label: c='red'
-		if "2015" in label: c='yellow'
-		if "2016" in label: c='cyan'
-		if "2017" in label: c='magenta'
-		if "2014" in label or "2015" in label: m='v'
-		if "2016" in label or "2017" in label: m='o'
-		plots[label] = ax.scatter(df['x'][i], df['y'][i], c=c, edgecolors='k', marker=m)
-	for spine in ax.spines.values(): spine.set_alpha(0.2)
-	ax.legend((plots["2014-09"],plots["2015-06"],plots["2016-02"],plots["2017-02"]),
-		("2014-09","2015-06","2016-02","2017-02"),
-		numpoints=1, loc='upper left', ncol=2, framealpha=1, frameon=True, facecolor='w', columnspacing=1, handlelength=0)
-	ax.set_xlabel("PC1 ("+str(int(100*PC1_expl))+"%) variation explained")
-	ax.set_ylabel("PC2 ("+str(int(100*PC2_expl))+"%) variation explained")
-	ax.set_title("PCoA of Weighted Unifrac matrix (Site A)")
-
-
-def draw_archaea_percent(data1, data2, ax):
-	df1={"date":[], "vals":[]}; df2={"date":[], "vals":[]};
-	for year in range(2014,2018):
-		for month in range(1,13):
-			if year==2014 and month<6: continue
-			if year==2017 and month>04: continue
-			if month<10: date=str(year)+"-0"+str(month)
-			else: date=str(year)+"-"+str(month)
-			
-			if date in data1:
-				for point in data1[date]:
-					df1["date"].append(date)
-					df1["vals"].append(point)
-			if date in data2:
-				for point in data2[date]:
-					df2["date"].append(date)
-					df2["vals"].append(point)
-			else:
-				df1["date"].append(date); df2["date"].append(date)
-				df1["vals"].append(0); df2["vals"].append(0)
-
-	sns.boxplot(x="date", y='vals', data=df1, width=2, linewidth=1, ax=ax, color="magenta")
-	sns.boxplot(x="date", y='vals', data=df2, width=2, linewidth=1, ax=ax, color="red")
+def draw_archaea_percent(data, ax, c):
+	df=convert_wideform_to_longform(data)
+	sns.boxplot(x="x", y='y', data=df, width=0.5, linewidth=1, ax=ax, palette=c)
+	sns.swarmplot(x="x", y='y', data=df, size=5, edgecolor="black", linewidth=0.5, ax=ax, palette=c)
 	
-	sns.swarmplot(x="date", y='vals', data=df1, size=3, edgecolor="black", linewidth=1, ax=ax, color="magenta")
-	sns.swarmplot(x="date", y='vals', data=df2, size=3, edgecolor="black", linewidth=1, ax=ax, color="red")
-	
-	ax.set_xticks([3,12,20,25,28,32])
-	for tick in ax.get_xticklabels(): tick.set_rotation(45)
-	ax.set_ylim(30,100)
-	ax.set_ylabel("Relative Archaea abundance")
-	ax.set_title("Relative abundance of Archaea in at two sampling sites")
-  	ax.axvline(x=15, ls='--')
-
-	legend_elements = [Patch(facecolor='magenta', edgecolor='k', label='Site A'), Patch(facecolor='red', edgecolor='k', label='Site B')]
-	ax.legend(handles=legend_elements, loc='lower left', framealpha=1, frameon=True, facecolor='w')
+	for tick in ax.get_xticklabels(): tick.set_rotation(0)
+	ax.set_ylim(40,105)
+	ax.set_ylabel("Archaea abundance (%) in 16S rDNA")
+	ax.set_title("Relative abundance of Archaea", fontsize=title_font)
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
+	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
 
 
-def draw_clustermap(filename, ax, v, h):
-	im = Image.open(filename)
-	plt.figimage(im, h, v)
+def draw_matrix_clustermap(filename, ax, c):
+	folder = os.path.dirname(os.path.realpath(__file__))
+	im = plt.imread(get_sample_data(folder + "/" + filename))
+	ax.imshow(im)
+	ax.xaxis.set_visible(False)
+	ax.set_yticklabels([])
+	for spine in ax.spines.values(): spine.set_visible(False)
+	ax.yaxis.set_ticks_position('none') 
+	ax.set_title("Dissimilarity clustering", fontsize=title_font)
+	ax.yaxis.labelpad = 0
+	ax.set_ylabel("16S rDNA samples")
+
+def draw_pathway_clustermap(filename, ax, c):
+	folder = os.path.dirname(os.path.realpath(__file__))
+	im = plt.imread(get_sample_data(folder + "/" + filename))
+	ax.imshow(im)
 	ax.axis("off")
-	ax.set_title("Dissimilarity clustering (Site A)")
-	legend_elements = [Patch(facecolor='red', edgecolor='k', label='2014-09'), 
-		Patch(facecolor='yellow', edgecolor='k', label='2015-06'),
-		Patch(facecolor='cyan', edgecolor='k', label='2016-02'),
-		Patch(facecolor='magenta', edgecolor='k', label='2017-02')]
-	ax.legend(handles=legend_elements, loc=[-0.05, -0.13], framealpha=1, frameon=True, facecolor='w', ncol=4, columnspacing=0.5, handlelength=1)
+	ax.set_title("Differentially abundant pathways", fontsize=title_font)
+
+def draw_functional_pca(data, ax, c):
+	finalDf, var, samples = calculate_pca(data)
+
+	ax.set_title("PCA of functional potential", fontsize=title_font)
+	ax.set_xlabel('PC1 (variance explained = '+ str(var[0]*100)[:4]+"%")
+	ax.set_ylabel('PC2 (variance explained = '+ str(var[1]*100)[:4]+"%")
+	ax.grid()
+
+	colors={}; i=0
+	for sample in sorted(samples):
+		label = "-".join(sample.split("-")[1:2])
+		if label not in colors:
+			colors[label]=c[i]
+			i+=1
+	for i in finalDf.index:
+		x = finalDf["component_1"][i]
+		y = finalDf["component_2"][i]
+		sample = "-".join(finalDf["index"][i].split("-")[1:2])
+		color=colors[sample]
+		ax.scatter(x, y, c=color, s=50, edgecolors='k', marker="o", linewidth=0.5)
+	for spine in ax.spines.values(): spine.set_alpha(0.2)
+	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
+
+
+def draw_signifficance_bars(data, ax):
+	h=96
+	for s1 in sorted(data):
+		for s2 in sorted(data, reverse=True):
+			if s1==s2: continue
+			if int(s1.split("-")[0])>int(s2.split("-")[0]): continue
+			test=stats.ttest_ind(df[s1], df[s2])
+			if test.pvalue > 0.01: continue
+			elif test.pvalue > 0.001: m='*'
+			elif test.pvalue > 0.0001: m='**'
+			else: m='***'
+			x_st = int(s1.split("-")[0])-2014
+			x_fi = int(s2.split("-")[0])-2014
+			ax.hlines(y=h, xmin=x_st, xmax=x_fi, linewidth=1, color='k')
+			ax.vlines(x=x_st, ymin=h-1, ymax=h, linewidth=1, color='k')
+			ax.vlines(x=x_fi, ymin=h-1, ymax=h, linewidth=1, color='k')
+			ax.text(0.95*(x_fi+x_st)/2.0, h-0.5, m)
+			h+=2.5
+
+	ax.text(-0.2, 45, "P-value:\n*   0.01\n**  0.001\n*** 0.0001", fontsize=12)
+
 
 
 
@@ -176,71 +176,60 @@ def draw_clustermap(filename, ax, v, h):
 
 
 # main figure layout:
-plt.rc('font', family='sans-serif')
-sns.set_palette("husl")
-sns.set_style("dark")
-fig = plt.figure(figsize=(16, 11))
-outer = gridspec.GridSpec(3, 1, wspace=0.15, hspace=0.6, height_ratios=[2,1,1], width_ratios=[1])
+#plt.rc('font', family='sans-serif')
+plt.rc('font', family='arial')
+sns.set_palette("colorblind")
+#sns.set_style("dark")
+fig = plt.figure(figsize=(10, 10))
+colors=["gold", "cyan", "royalblue", "magenta"]
+title_font=16
+
+print "plotting OTU dissimilarity matrix..."
+# xmin, ymin, dx, dy
+ax = fig.add_axes([0.045, 0.51, 0.44, 0.44])
+os.system("python matrix_cluster.py weighted_unifrac_matrix.tab 4 "+" ".join(colors))
+draw_matrix_clustermap("w-unifrac.png", ax, colors)
+ax.annotate("A", xy=(-0.08, 1.01), xycoords="axes fraction", fontsize=20)
 
 
-for i, label in enumerate(['TOP PANEL','MIDDLE','BOTTOM']):
-	if label=="TOP PANEL":
-		# make other figures in top row
-		inner = gridspec.GridSpecFromSubplotSpec(1, 3, subplot_spec=outer[i], wspace=0.2, width_ratios=[1,0.7,1])
-		for j, panel in enumerate(['A', 'B','C']):
-			ax = plt.Subplot(fig, inner[j])
-			ax.annotate(panel, xy=(-0.1, 1.1), xycoords="axes fraction", fontsize=16)
-			if panel=="A":
-				print "making PCoA plot..."
-				PC1_expl,PC2_expl,PC1,PC2,labels = load_pca_coord("weighted_unifrac_pcoa.txt")
-				df = convert_lists_to_df(PC1, PC2, labels)
-				draw_pcoa(PC1_expl, PC2_expl, df, ax)
-			if panel=="B":
-				print "making clustermap plot..."
-				os.system("python clustermap.py weighted_unifrac_matrix.tab 4.2")
-				vertical=660
- 				horisontal=650
-				draw_clustermap("clustermap.png", ax, vertical, horisontal)
-			if panel=="C":
-				print "making Archaea abundance plot..."
-				inputfile1="siteA_otu_table.tab"
-				inputfile2="siteB_otu_table.tab"
-				df1 = load_otu_data(inputfile1, 0)
-				df2 = load_otu_data(inputfile2, 0)
-				data1=load_taxa_data(df1, "Archaea")
-				data2=load_taxa_data(df2, "Archaea")
-				draw_archaea_percent(data1, data2, ax)
+print "making Archaea bar plot"
+ax = fig.add_axes([0.56, 0.57, 0.4, 0.38])
+df = load_otu_data("siteA_otu_table.tab", 0)
+data=load_taxa_data(df, "Archaea")
+draw_archaea_percent(data, ax, colors)
+draw_signifficance_bars(data, ax)
+ax.annotate("B", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
 
-			fig.add_subplot(ax)
 
-	if label=="MIDDLE" or label=="BOTTOM":
-		# make phyla abundance figures
-		if label=='MIDDLE': inputfile="siteA_otu_table.tab"
-		if label=='BOTTOM': inputfile="siteB_otu_table.tab"
-		print "making phyla abundance plot ("+inputfile+")..."
-	
-		rank_of_interest=2
-		taxa_of_interest=["Cyanobacteria","Chloroplast","Cytophagia","Halobacteria"]
-	
-		df = load_otu_data(inputfile, rank_of_interest)
-		taxa_data={}
-		for taxa in taxa_of_interest: 
-			taxa_data[taxa]=load_taxa_data(df, taxa)
+print "making funcitonal PCA..."
+ax = fig.add_axes([0.08, 0.12, 0.38, 0.38])
+df = pd.read_csv("pathway_abundance.tab", delimiter="\t", index_col="Category").T
+data = df.div(df.sum(axis=0), axis=1)
+data=1000000*data
+draw_functional_pca(data, ax, colors)
+ax.annotate("C", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
 
-		inner = gridspec.GridSpecFromSubplotSpec(1, len(taxa_of_interest), subplot_spec=outer[i], wspace=0.3)
-		alphabet=["A","B","C","D","E","F","G","H","I","J","K","L"]; pos=3
-		for j, taxa in enumerate(taxa_data):
-			ax = plt.Subplot(fig, inner[j])
-			ax.annotate(alphabet[pos], xy=(-0.1, 1.1), xycoords="axes fraction", fontsize=16)
-			pos+=1
-			data=taxa_data[taxa]
-			draw_boxplots(data, taxa, ax, i)
-			if j==0 and label=="MIDDLE": ax.set_ylabel("Abundance (%) in Site A")
-			if j==0 and label=="BOTTOM": ax.set_ylabel("Abundance (%) in Site B")
-			fig.add_subplot(ax)
 
-plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
-plt.savefig("figure_1.png")
+print "making pathway clustermap..."
+ax = fig.add_axes([0.52, 0.02, 0.48, 0.48])
+os.system("python pathway_cluster.py differential_pathways.tab 4 4 "+" ".join(colors))
+draw_pathway_clustermap("pathway_clustermap.png", ax, colors)
+ax.annotate("D", xy=(-0.08, 1.01), xycoords="axes fraction", fontsize=20)
+
+
+print "making legend..."
+ax = fig.add_axes([0.0, 0.0, 1, 0.05])
+ax.axis("off")
+legend_elements = [Patch(facecolor=colors[0], edgecolor='k', label='2014', linewidth=1),
+        Patch(facecolor=colors[1], edgecolor='k', label='2015', linewidth=1),
+        Patch(facecolor=colors[2], edgecolor='k', label='2016', linewidth=1),
+        Patch(facecolor=colors[3], edgecolor='k', label='2017', linewidth=1)]
+ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=True, facecolor='w', ncol=4, columnspacing=1, handlelength=1, prop={'size': 16})
+
+
+#plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
+plt.savefig("figure_1.png", dpi=300)
+plt.grid()
 plt.show()
 
 

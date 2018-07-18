@@ -30,10 +30,10 @@ z=1000000*z
 
 
 # remove uninteresting bins
-boi = ["bin.9", "bin.43", "bin.63", "bin.algae"]
-for index in z.index.values:
-        if index not in boi:
-                z=z.drop(index)
+#boi = ["bin.9", "bin.43", "bin.63", "bin.algae"]
+#for index in z.index.values:
+#        if index not in boi:
+#                z=z.drop(index)
 
 
 
