@@ -77,6 +77,28 @@ def calculate_pca(df):
 	var = pca.explained_variance_ratio_
 	return finalDf, var, samples
 
+def contig_correlation_statistics(data):
+	print data
+	comparisons={}
+	for s1 in sorted(data):
+		for s2 in sorted(data):
+			if s1.split("-")[1] == s2.split("-")[1]: continue
+			if int(s1.split("-")[1]) > int(s2.split("-")[1]): continue
+			values1 = data[s1].tolist()
+			values2 = data[s2].tolist()
+			test = stats.pearsonr(values1, values2)
+			comparison = s1.split("-")[1]+"-"+s2.split("-")[1]
+			if comparison not in comparisons: comparisons[comparison]=[]
+			comparisons[comparison].append(test[0])
+	print "\t".join(["comparison 1", "comparison 2", "t-statistic", "p-value"])
+	for i in sorted(comparisons):
+		for j in sorted(comparisons):
+			if i==j: continue
+			if int(i.split("-")[0])>int(j.split("-")[0]): continue
+			test = stats.ttest_ind(comparisons[i], comparisons[j])
+			print "\t".join([i,j,str(test[0]), str(test[1])])
+
+
 def convert_wideform_to_longform(dictionary):
 	df={"x":[], "y":[]}
 	for key in sorted(dictionary):
@@ -125,9 +147,7 @@ def draw_bin_clustermap(filename, ax, c):
 	ax.set_ylabel("Metagenome-assembled genomes", labelpad=-0)
 
 
-def draw_contig_pca(data, ax, c):
-	finalDf, var, samples = calculate_pca(data)
-
+def draw_contig_pca(finalDf, var, samples, c):
 	ax.set_title("PCA of contig abundance", fontsize=title_font)
 	ax.set_xlabel('PC1 (variance explained = '+ str(var[0]*100)[:4]+"%")
 	ax.set_ylabel('PC2 (variance explained = '+ str(var[1]*100)[:4]+"%")
@@ -187,7 +207,7 @@ def draw_signifficance_bars(df, ax):
 		for s2 in sorted(data, reverse=True):
 			if s1==s2: continue
 			if int(s1.split("-")[0])>int(s2.split("-")[0]): continue
-			test=stats.ks_2samp(df[s1], df[s2])
+			test=stats.ks_2samp(data[s1], data[s2])
 			if test.pvalue > 0.01: continue
 			elif test.pvalue > 0.001: m='*'
 			elif test.pvalue > 0.0001: m='**'
@@ -237,7 +257,9 @@ print "making contig abundance PCA..."
 ax = fig.add_axes([0.08, 0.12, 0.38, 0.38])
 df = pd.read_csv("contig_abundance_table.tab", delimiter="\t", index_col="#contig").T
 df=df.div(df.sum(axis=1)*0.000001, axis=0)
-draw_contig_pca(df, ax, colors)
+finalDf, var, samples = calculate_pca(df)
+contig_correlation_statistics(df.T)
+draw_contig_pca(finalDf, var, samples, colors)
 ax.annotate("C", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
 
 

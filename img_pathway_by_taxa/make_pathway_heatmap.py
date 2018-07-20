@@ -70,7 +70,7 @@ def find_pathway_carriers(file_name):
 		paths=cut[4].split("|")
 		for path in paths:
 			cut_path=path.split(";")
-			if cut_path[0]=="Metabolism": continue
+			#if cut_path[0]=="Metabolism": continue
 
 			#path=";".join(cut_path[:2])
 			#path=";".join(cut_path[:3])
@@ -156,6 +156,11 @@ def select_taxonomy_contigs (function_carriers, taxonomy, taxa):
 		function_carriers[function]=good_contigs
 	return function_carriers
 
+def remove_low_abundance_pathways(df):
+	df=df.T
+	df.drop([col for col, val in df.sum().iteritems() if val < 1], axis=1, inplace=True)
+	return df.T
+
 
 # MAIN
 taxonomy = load_taxonomy("contig_taxonomy.tab")
@@ -163,8 +168,13 @@ depths, samples, contigs = load_contig_depths("contig_depth.tab")
 depths = standardize_contig_depths(depths, samples, contigs)
 function_carriers = find_pathway_carriers("img_annotation.master")
 if len(sys.argv)>1: function_carriers = select_taxonomy_contigs(function_carriers, taxonomy, sys.argv[1])
-pathway_abundances = get_pathway_abundances(function_carriers, depths)
+
+all_pathway_abundances = get_pathway_abundances(function_carriers, depths)
+pathway_abundances = remove_low_abundance_pathways(all_pathway_abundances)
+pathway_abundances.to_csv("pathway_abundance.tab", sep='\t')
+
 differential_pathways = remove_stoic_pathways(pathway_abundances)
+
 differential_pathways.to_csv("differential_pathways.tab", sep='\t')
 plot_even_clustermap(differential_pathways, False)
 

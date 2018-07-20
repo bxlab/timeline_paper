@@ -64,15 +64,8 @@ def load_otu_data(inputfile, rank_of_interest):
 	return df
 	
 
-def calculate_pca(data):
-	standard = StandardScaler()
-	Data_SArray = standard.fit_transform(data)
-	Data_Standard = pd.DataFrame(Data_SArray)
-
-	samples=list(data.index.values)
-	indeces=list(Data_Standard.index.values)
-	mapper = dict(zip(indeces, samples))
-	df=Data_Standard.rename(index=mapper)
+def calculate_pca(df):
+	samples=list(df.index.values)
 
 	pca = PCA(n_components=2)
 	principalComponents = pca.fit_transform(df)
@@ -80,8 +73,32 @@ def calculate_pca(data):
 
 	df = df.reset_index()
 	finalDf = pd.concat([principalDf, df[["index"]]], axis = 1)
+	finalDf["component_1"]/=1000
+	finalDf["component_2"]/=1000
 	var = pca.explained_variance_ratio_
 	return finalDf, var, samples
+
+
+def functional_correlation_statistics(data):
+	comparisons={}
+	for s1 in sorted(data):
+		for s2 in sorted(data):
+			if s1.split("-")[1] == s2.split("-")[1]: continue
+			if int(s1.split("-")[1]) > int(s2.split("-")[1]): continue
+			values1 = data[s1].tolist()
+			values2 = data[s2].tolist()
+			test = stats.pearsonr(values1, values2)
+			comparison = s1.split("-")[1]+"-"+s2.split("-")[1]
+			if comparison not in comparisons: comparisons[comparison]=[]
+			comparisons[comparison].append(test[0])
+	print "\t".join(["comparison 1", "comparison 2", "t-statistic", "p-value"])
+	for i in sorted(comparisons):
+		for j in sorted(comparisons): 
+			if i==j: continue
+			if int(i.split("-")[0])>int(j.split("-")[0]): continue
+			test = stats.ttest_ind(comparisons[i], comparisons[j])
+			print "\t".join([i,j,str(test[0]), str(test[1])])
+
 
 def convert_wideform_to_longform(dictionary):
 	df={"x":[], "y":[]}
@@ -124,9 +141,7 @@ def draw_pathway_clustermap(filename, ax, c):
 	ax.axis("off")
 	ax.set_title("Differentially abundant pathways", fontsize=title_font)
 
-def draw_functional_pca(data, ax, c):
-	finalDf, var, samples = calculate_pca(data)
-
+def draw_functional_pca(finalDf, var, samples, ax, c):
 	ax.set_title("PCA of functional potential", fontsize=title_font)
 	ax.set_xlabel('PC1 (variance explained = '+ str(var[0]*100)[:4]+"%")
 	ax.set_ylabel('PC2 (variance explained = '+ str(var[1]*100)[:4]+"%")
@@ -148,7 +163,7 @@ def draw_functional_pca(data, ax, c):
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
 
 
-def draw_signifficance_bars(data, ax):
+def draw_signifficance_bars(df, ax):
 	h=96
 	for s1 in sorted(data):
 		for s2 in sorted(data, reverse=True):
@@ -167,7 +182,7 @@ def draw_signifficance_bars(data, ax):
 			ax.text(0.95*(x_fi+x_st)/2.0, h-0.5, m)
 			h+=2.5
 
-	ax.text(-0.2, 45, "P-value:\n*   0.01\n**  0.001\n*** 0.0001", fontsize=12)
+	ax.text(-0.2, 45, "P-value:\n*   0.01\n**  0.001\n*** 0.0001", fontsize=10)
 
 
 
@@ -203,10 +218,12 @@ ax.annotate("B", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
 
 print "making funcitonal PCA..."
 ax = fig.add_axes([0.08, 0.12, 0.38, 0.38])
-df = pd.read_csv("pathway_abundance.tab", delimiter="\t", index_col="Category").T
+df = pd.read_csv("pathway_abundance.tab", delimiter="\t", index_col=0)
 data = df.div(df.sum(axis=0), axis=1)
 data=1000000*data
-draw_functional_pca(data, ax, colors)
+finalDf, var, samples = calculate_pca(data.T)
+functional_correlation_statistics(data)
+draw_functional_pca(finalDf, var, samples, ax, colors)
 ax.annotate("C", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
 
 
@@ -230,7 +247,7 @@ ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=Tru
 #plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
 plt.savefig("figure_1.png", dpi=300)
 plt.grid()
-plt.show()
+#plt.show()
 
 
 
