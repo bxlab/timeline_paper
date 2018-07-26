@@ -230,9 +230,16 @@ def draw_signifficance_bars(df, ax):
 
 
 # main figure layout:
+<<<<<<< HEAD
+font = {'family': 'arial', 'weight': 'normal', 'size': 12}
+plt.rc('font', **font)
+
+sns.set_palette("colorblind")
+=======
 plt.rc('font', family='arial')
 sns.set_palette("colorblind")
 #sns.set_style("dark")
+>>>>>>> c825732bb19ee49dcbaecc89ec1c74a84f3b3bd2
 fig = plt.figure(figsize=(10, 10))
 colors=["gold", "cyan", "royalblue", "magenta"]
 title_font=16

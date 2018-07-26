@@ -134,7 +134,11 @@ def plot_even_clustermap(df, log):
 
 	if log==False:
 		df = df.div(df.max(axis=1), axis=0)
+<<<<<<< HEAD
+		g = sns.clustermap(df, col_cluster=True, col_colors=lut, cmap="Blues", figsize=(12,12), vmin=0, vmax=1, yticklabels=True)
+=======
 		g = sns.clustermap(df, col_cluster=True, col_colors=lut, cmap="Blues", figsize=(12,12), vmin=0, vmax=1)
+>>>>>>> c825732bb19ee49dcbaecc89ec1c74a84f3b3bd2
 	if log==True:
 		df=df+0.01
 		df = np.log(df)
