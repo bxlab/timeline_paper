@@ -255,39 +255,78 @@ def draw_dist(data, ax, colors):
 
 def draw_iep_boxplot(ieps, ax, c):
 	df={"x":[], "y":[]}
+	dict_data={}
 	for sample in ieps:
 		iep = weighted_average_iep(ieps[sample])
 		year = sample.split("-")[1]
+		date = "-".join(sample.split("-")[1:3])
 		df["x"].append(year)
 		df["y"].append(iep)
+		if date not in dict_data: dict_data[date]=[]
+		dict_data[date].append(iep)
 	sns.boxplot(x="x", y='y', data=df, width=0.5, linewidth=1, ax=ax, palette=c)
 	sns.swarmplot(x="x", y='y', data=df, size=5, edgecolor="black", linewidth=0.5, ax=ax, palette=c)
+	draw_signifficance_bars(dict_data, ax, 0.6)
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
 
 
 def draw_trk_boxplot(trk_dict, ax, c):
 	df={"x":[], "y":[]}
+	dict_data={}
 	for sample in trk_dict:
 		val = trk_dict[sample]
 		year = sample.split("-")[1]
+		date = "-".join(sample.split("-")[1:3])
 		df["x"].append(year)
 		df["y"].append(val)
+		if date not in dict_data: dict_data[date]=[]
+		dict_data[date].append(val)
 	sns.boxplot(x="x", y='y', data=df, width=0.5, linewidth=1, ax=ax, palette=c)
 	sns.swarmplot(x="x", y='y', data=df, size=5, edgecolor="black", linewidth=0.5, ax=ax, palette=c)
+	draw_signifficance_bars(dict_data, ax, 0.6)
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
+
+
+def get_max_min_in_dict(dictionary):
+        maxs=[]; mins=[]
+        for key in dictionary:
+                maxs.append(max(dictionary[key]))
+                mins.append(min(dictionary[key]))
+        return max(maxs), min(mins)
+
+
+def draw_signifficance_bars(df, ax, inc_mod=1):
+	max_val,min_val = get_max_min_in_dict(df)
+	h = (max_val-min_val)*1.1 + min_val
+	inc = (h-min_val)*0.05*inc_mod
+
+	for x_st,s1 in enumerate(sorted(df)):
+		for x_fi,s2 in enumerate(sorted(df)):
+			s1_tot=float(s1.split("-")[0]) + float(s1.split("-")[0])/10
+			s2_tot=float(s2.split("-")[0]) + float(s2.split("-")[0])/10
+			if s1>=s2: continue
+			test=stats.ttest_ind(df[s1], df[s2])
+			if test.pvalue > 0.01: continue
+			elif test.pvalue > 0.001: m='*'
+			elif test.pvalue > 0.0001: m='**'
+			else: m='***'
+			ax.hlines(y=h, xmin=x_st, xmax=x_fi, linewidth=1, color='k')
+			ax.text((x_fi+x_st)/2.0, h-inc/3, m, ha='center', fontsize=10)
+			h+=inc
+
 
 
 # START MAIN SCRIPT
 
 # main figure layout:
-font = {'family': 'arial', 'weight': 'normal', 'size': 12}
+font = {'family': 'arial', 'weight': 'normal', 'size': 10}
 plt.rc('font', **font)
 sns.set_palette("colorblind")
-fig = plt.figure(figsize=(14, 10))
+fig = plt.figure(figsize=(10, 8))
 colors=["gold", "cyan", "royalblue", "magenta"]
-title_font=16
+title_font=14
 
 
 # loading individual assembly data
@@ -309,7 +348,7 @@ std_dist = standardize_distributions(joint_dist)
 draw_dist(std_dist, ax, colors)
 ax.set_xlabel("Isoelectric Point (pI)")
 ax.set_ylabel("Relative abundance")
-ax.set_title("Protein pI distribution", fontsize=title_font)
+ax.set_title("pI distribution", fontsize=title_font)
 ax.annotate("A", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
 
 
@@ -326,7 +365,7 @@ ax = fig.add_subplot(233)
 trk_data = get_trk_abundance("co-assembly/img_annotation.master", co_depths, co_samples, co_contigs)
 draw_trk_boxplot(trk_data, ax, colors)
 ax.set_ylabel("Average Trk abundance")
-ax.set_title("Potassium uptake potential", fontsize=title_font)
+ax.set_title("Trk potential", fontsize=title_font)
 ax.annotate("C", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
 
 
@@ -341,7 +380,7 @@ for i,taxa in enumerate(["Bacteroidetes", "Halobacteria"]):
 draw_dist(std_dist, ax, colors)
 ax.set_xlabel("Isoelectric Point (pI)")
 ax.set_ylabel("Relative abundance")
-ax.set_title("Protein pI distribution by taxonomy", fontsize=title_font)
+ax.set_title("pI distribution by taxa", fontsize=title_font)
 ax.annotate("D", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
 
 
@@ -350,7 +389,7 @@ ax = fig.add_subplot(235)
 taxa_ieps = subset_by_taxa(ieps, "Halobacteria")
 draw_iep_boxplot(taxa_ieps, ax, colors)
 ax.set_ylabel("Average isoelectric point")
-ax.set_title("Average pI of Halobacteria", fontsize=title_font)
+ax.set_title("Average pI in Halobacteria", fontsize=title_font)
 ax.annotate("E", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
 
 
@@ -360,11 +399,11 @@ halo_contigs = select_contigs_by_taxonomy(co_contigs, co_taxonomy, "Halobacteria
 trk_data = get_trk_abundance("co-assembly/img_annotation.master", co_depths, co_samples, halo_contigs)
 draw_trk_boxplot(trk_data, ax, colors)
 ax.set_ylabel("Average Trk abundance")
-ax.set_title("Potassium uptake in Halobacteria", fontsize=title_font)
+ax.set_title("Trk potential in Halobacteria", fontsize=title_font)
 ax.annotate("F", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
 
 
-plt.tight_layout()
+plt.tight_layout(w_pad=-0)
 plt.savefig("figure_S5.png", dpi=300)
 
 

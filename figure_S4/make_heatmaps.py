@@ -106,6 +106,7 @@ def remove_stoic_pathways(pathway_abundances):
 
 
 def plot_even_clustermap(df):
+	sns.set(font_scale=0.6)
 	print "plotting clustermap..."
 	lut=[]
 	for sample in df.columns.values:

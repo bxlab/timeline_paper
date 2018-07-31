@@ -18,6 +18,122 @@ from sklearn.preprocessing import StandardScaler
 from matplotlib.colors import LogNorm
 
 
+def load_contig_depths(file_name):
+	print "loading contig depths..."
+	depths=np.loadtxt(open(file_name), delimiter="\t", skiprows=0, usecols=range(1,21))
+
+	print "loading contig and sample name mappings..."
+	samples={}
+	contigs={}
+	for i, line in enumerate(open(file_name)):
+		cut=line.strip().split("\t")
+		if i==0:
+			header=cut
+			for i in range(len(header)):
+				if header[i][0]=="#": continue
+				samples[header[i]]=i-1
+		else:
+			contigs[cut[0]]=i-1
+
+	# using this format: depths[contigs[contig]][samples[sample]
+	return depths, samples, contigs
+
+
+def find_pathway_carriers(file_name):
+	print "finding which contigs carry each pathway function..."
+	function_carriers={}
+	for line in open(file_name):
+		if line[0]=="#": continue
+		cut=line.strip().split("\t")
+		if cut[0].split("-")[0] not in contigs: continue
+		if cut[3]=="NA": continue
+
+		paths=cut[4].split("|")
+		for path in paths:
+			if path not in function_carriers:
+				function_carriers[path]=[cut[0].split("-")[0]]
+			else:
+				function_carriers[path].append(cut[0].split("-")[0])
+	return function_carriers
+
+
+def get_pathway_abundances(function_carriers, depths):
+	print "making total pathway abundance table..."
+	pathway_abundances={}
+	for sample in samples:
+		pathway_abundances[sample]={}
+	for function in function_carriers:
+		for sample in samples:
+			pathway_abundances[sample][function]=0
+		for contig in function_carriers[function]:
+			for sample in samples:
+				depth=depths[contigs[contig]][samples[sample]]
+				pathway_abundances[sample][function] += depth
+	df = pd.DataFrame.from_dict(pathway_abundances)
+	return df
+
+
+def collapse_paths(pathway_abundances):
+	df = pd.DataFrame()
+	to_collapse=["Xenobiotics biodegradation and metabolism", 
+		"Metabolism of terpenoids and polyketides", 
+		"Metabolism of cofactors and vitamins", 
+		"Glycan biosynthesis and metabolism",
+		"Biosynthesis of other secondary metabolites",
+		"Replication and repair",
+		"Amino acid metabolism",
+		"Signal transduction",
+		"Metabolism of other amino acids"]
+	for path,row in pathway_abundances.iterrows():
+		cut = path.split(";")
+		if cut[1] in to_collapse:
+			cut[2]="All"
+		path=";".join(cut)
+
+		if path not in df:
+			df[path] = row
+		else:
+			df[path] += row
+	return df.T
+
+
+def remove_low_abundance_pathways(data, min_total=1):
+	df=data.copy().T
+	df.drop([col for col, val in df.sum().iteritems() if val < min_total], axis=1, inplace=True)
+	return df.T
+
+
+def remove_stoic_pathways(pathway_abundances):
+	print "selecting differential abundant pathways..."
+	df=remove_low_abundance_pathways(pathway_abundances, 10)
+	df = df.div(df.sum(axis=0), axis=1)
+	df=1000000*df
+	# exclude categories irrelevant to prokaryotic communities and interpretation of functional potential
+	exclude = ["Cell growth and death", "Global and overview maps", "ukaryotes"]
+	for path in df.index.values:
+		for string in exclude:
+			if string in path:
+				df.drop(path, inplace=True)
+
+	n=0; p=0.01; m=df.shape[0]
+	for path in df.index.values:
+		t2014=[];t2015=[];t2016=[];t2017=[]
+		for sample in df.columns.values:
+			if "2014" in sample: t2014.append(df[sample][path])
+			if "2015" in sample: t2015.append(df[sample][path])
+			if "2016" in sample: t2016.append(df[sample][path])
+			if "2017" in sample: t2017.append(df[sample][path])
+		anova = stats.f_oneway(t2014, t2015, t2016, t2017)
+		if anova[1] < p:
+			n+=1
+		else:
+			df.drop(path, inplace=True)
+		
+	print str(n) + " signifficant functional groups found!"
+	print "FDR (n*p/m) = "+str(n*p/m)
+	return df
+
+
 #standardize each sample to number of reads in each sample (to 10000 reads per sample)
 def standardize_otu_table(df, reads):
 	df/=df.sum()
@@ -163,42 +279,45 @@ def draw_functional_pca(finalDf, var, samples, ax, c):
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
 
 
-def draw_signifficance_bars(df, ax):
-	h=96
-	for s1 in sorted(data):
-		for s2 in sorted(data, reverse=True):
-			if s1==s2: continue
-			if int(s1.split("-")[0])>int(s2.split("-")[0]): continue
+
+def get_max_min_in_dict(dictionary):
+        maxs=[]; mins=[]
+        for key in dictionary:
+                maxs.append(max(dictionary[key]))
+                mins.append(min(dictionary[key]))
+        return max(maxs), min(mins)
+
+
+def draw_signifficance_bars(df, ax, inc_mod=1):
+	max_val,min_val = get_max_min_in_dict(df)
+	h = (max_val-min_val)*1.1 + min_val
+	inc = (h-min_val)*0.05*inc_mod
+
+	for x_st,s1 in enumerate(sorted(df)):
+		for x_fi,s2 in enumerate(sorted(df)):
+			s1_tot=float(s1.split("-")[0]) + float(s1.split("-")[0])/10
+			s2_tot=float(s2.split("-")[0]) + float(s2.split("-")[0])/10
+			if s1>=s2: continue
 			test=stats.ttest_ind(df[s1], df[s2])
 			if test.pvalue > 0.01: continue
 			elif test.pvalue > 0.001: m='*'
 			elif test.pvalue > 0.0001: m='**'
 			else: m='***'
-			x_st = int(s1.split("-")[0])-2014
-			x_fi = int(s2.split("-")[0])-2014
 			ax.hlines(y=h, xmin=x_st, xmax=x_fi, linewidth=1, color='k')
-			ax.vlines(x=x_st, ymin=h-1, ymax=h, linewidth=1, color='k')
-			ax.vlines(x=x_fi, ymin=h-1, ymax=h, linewidth=1, color='k')
-			ax.text(0.95*(x_fi+x_st)/2.0, h-0.5, m)
-			h+=2.5
-
-	ax.text(-0.2, 45, "P-value:\n*   0.01\n**  0.001\n*** 0.0001", fontsize=10)
+			ax.text((x_fi+x_st)/2.0, h-inc/3, m, ha='center', fontsize=10)
+			h+=inc
 
 
 
 
 ##################   START SCRIPT     ######################
 
-
 # main figure layout:
-<<<<<<< HEAD
 font = {'family': 'arial', 'weight': 'normal', 'size': 12}
 plt.rc('font', **font)
 
-=======
 #plt.rc('font', family='sans-serif')
 plt.rc('font', family='arial')
->>>>>>> c825732bb19ee49dcbaecc89ec1c74a84f3b3bd2
 sns.set_palette("colorblind")
 #sns.set_style("dark")
 fig = plt.figure(figsize=(10, 10))
@@ -208,24 +327,29 @@ title_font=16
 print "plotting OTU dissimilarity matrix..."
 # xmin, ymin, dx, dy
 ax = fig.add_axes([0.045, 0.51, 0.44, 0.44])
-os.system("python matrix_cluster.py weighted_unifrac_matrix.tab 4 "+" ".join(colors))
-draw_matrix_clustermap("w-unifrac.png", ax, colors)
+os.system("python cluster_matrix.py weighted_unifrac_matrix.tab 4 "+" ".join(colors))
+draw_matrix_clustermap("cluster_matrix.png", ax, colors)
 ax.annotate("A", xy=(-0.08, 1.01), xycoords="axes fraction", fontsize=20)
 
 
 print "making Archaea bar plot"
 ax = fig.add_axes([0.56, 0.57, 0.4, 0.38])
-df = load_otu_data("siteA_otu_table.tab", 0)
+df = load_otu_data("otu_table.txt", 0)
 data=load_taxa_data(df, "Archaea")
 draw_archaea_percent(data, ax, colors)
-draw_signifficance_bars(data, ax)
+draw_signifficance_bars(data, ax, 0.7)
 ax.annotate("B", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
 
 
-print "making funcitonal PCA..."
+print "loading functional data..."
 ax = fig.add_axes([0.08, 0.12, 0.38, 0.38])
-df = pd.read_csv("pathway_abundance.tab", delimiter="\t", index_col=0)
-data = df.div(df.sum(axis=0), axis=1)
+depths, samples, contigs = load_contig_depths("contig_depth.tab")
+function_carriers = find_pathway_carriers("img_annotation.master")
+pathway_abundances = get_pathway_abundances(function_carriers, depths)
+
+
+print "making funcitonal PCA..."
+data = pathway_abundances.div(pathway_abundances.sum(axis=0), axis=1)
 data=1000000*data
 finalDf, var, samples = calculate_pca(data.T)
 functional_correlation_statistics(data)
@@ -235,8 +359,11 @@ ax.annotate("C", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
 
 print "making pathway clustermap..."
 ax = fig.add_axes([0.52, 0.02, 0.48, 0.48])
-os.system("python pathway_cluster.py differential_pathways.tab 4 4 "+" ".join(colors))
-draw_pathway_clustermap("pathway_clustermap.png", ax, colors)
+pathway_abundances = collapse_paths(pathway_abundances)
+differential_paths = remove_stoic_pathways(pathway_abundances)
+differential_paths.to_csv("differential_pathways.tab", sep="\t")
+os.system("python cluster_pathways.py differential_pathways.tab 4 4 "+" ".join(colors))
+draw_pathway_clustermap("cluster_pathways.png", ax, colors)
 ax.annotate("D", xy=(-0.08, 1.01), xycoords="axes fraction", fontsize=20)
 
 

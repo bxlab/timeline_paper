@@ -78,7 +78,6 @@ def calculate_pca(df):
 	return finalDf, var, samples
 
 def contig_correlation_statistics(data):
-	print data
 	comparisons={}
 	for s1 in sorted(data):
 		for s2 in sorted(data):
@@ -230,16 +229,13 @@ def draw_signifficance_bars(df, ax):
 
 
 # main figure layout:
-<<<<<<< HEAD
 font = {'family': 'arial', 'weight': 'normal', 'size': 12}
 plt.rc('font', **font)
 
 sns.set_palette("colorblind")
-=======
 plt.rc('font', family='arial')
 sns.set_palette("colorblind")
 #sns.set_style("dark")
->>>>>>> c825732bb19ee49dcbaecc89ec1c74a84f3b3bd2
 fig = plt.figure(figsize=(10, 10))
 colors=["gold", "cyan", "royalblue", "magenta"]
 title_font=16
@@ -248,21 +244,21 @@ title_font=16
 print "plotting OTU dissimilarity matrix..."
 # xmin, ymin, dx, dy
 ax = fig.add_axes([0.045, 0.51, 0.44, 0.44])
-os.system("python matrix_cluster.py unweighted_unifrac_matrix.tab 4 "+" ".join(colors))
-draw_matrix_clustermap("uw-unifrac.png", ax, colors)
+os.system("python cluster_matrix.py unweighted_unifrac_matrix.tab 4 "+" ".join(colors))
+draw_matrix_clustermap("cluster_matrix.png", ax, colors)
 ax.annotate("A", xy=(-0.08, 1.01), xycoords="axes fraction", fontsize=20)
 
 
 print "making MAG clustermap..."
 ax = fig.add_axes([0.52, 0.49, 0.48, 0.46])
-os.system("python bin_cluster.py bin_abundances.tab 3.9 4 "+" ".join(colors))
-draw_bin_clustermap("bin_abundances.png", ax, colors)
+os.system("python cluster_mags.py bin_abundances.tab 3.9 4 "+" ".join(colors))
+draw_bin_clustermap("cluster_mags.png", ax, colors)
 ax.annotate("B", xy=(-0.1, 1.01), xycoords="axes fraction", fontsize=20)
 
 
 print "making contig abundance PCA..."
 ax = fig.add_axes([0.08, 0.12, 0.38, 0.38])
-df = pd.read_csv("contig_abundance_table.tab", delimiter="\t", index_col="#contig").T
+df = pd.read_csv("contig_abundances.tab", delimiter="\t", index_col="#contig").T
 df=df.div(df.sum(axis=1)*0.000001, axis=0)
 finalDf, var, samples = calculate_pca(df)
 contig_correlation_statistics(df.T)
@@ -272,6 +268,7 @@ ax.annotate("C", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
 
 print "making rearrangment violin plots"
 ax = fig.add_axes([0.56, 0.12, 0.4, 0.38])
+os.system("python calculate_rearrangements.py 0")
 comparisons=["2014-2015", "2015-2016", "2016-2017", "2017-2014"]
 data={}; raw={}
 for comparison in comparisons:
@@ -293,7 +290,7 @@ ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=Tru
 
 
 #plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
-plt.savefig("figure_1.png", dpi=300)
+plt.savefig("figure_2.png", dpi=300)
 plt.grid()
 #plt.show()
 

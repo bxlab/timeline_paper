@@ -1,0 +1,93 @@
+BIN	completeness	contamination	GC	N50	size (bp)	After/Before fold change	CheckM taxonomy	metaWRAP taxonomy	Consensus taxonomy (Taxator-tk + Kraken + metaWRAP)
+bin.algae	NA	NA	0.556	9621	9945709	1.410167872	NA	Eukaryota	Eukaria;Plantae;Chlorophyta
+bin.61	98.01	1.702	0.676	13193	2907746	4.421333559	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.63	97.77	0.222	0.439	18977	3489855	595.3363753	Cyanobacteria	Bacteria;Cyanobacteria;Chroococcales;Aphanothecaceae	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales
+bin.6	97.05	0.816	0.643	36692	1787608	0.096452557	Euryarchaeota	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.9	96.22	1.333	0.483	8198	3548370	0.4297734	Cyanobacteria	Bacteria;Cyanobacteria	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Oscillatoriales
+bin.46	95.95	1.725	0.676	18319	2506034	22.5028604	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.19	95.48	1.207	0.637	8367	2396020	18.30245377	Gammaproteobacteria	Bacteria;Proteobacteria;Gammaproteobacteria	Bacteria;Proteobacteria;Gammaproteobacteria;Chromatiales;Ectothiorhodospiraceae
+bin.35	94.84	2.815	0.666	12192	3181126	2.200165097	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.56	94.6	1.815	0.641	11350	3203868	0.371065931	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Natrialbales;Natrialbaceae
+bin.36	94.48	1.674	0.692	15045	3252985	1.927879133	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae
+bin.67	94.25	1.866	0.701	11609	3121721	0.297223371	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.79	93.99	1.315	0.618	9051	2064438	0.172051421	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.50	93.89	1.806	0.689	11289	2641672	4.662571345	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae;Halorubrum;Halorubrum trapanicum	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae;Halorubrum;Halorubrum trapanicum
+bin.42	93.84	2.136	0.73	11979	2413993	3.782066975	Bacteria	Bacteria;Actinobacteria;Actinobacteria	Bacteria;Terrabacteria group;Actinobacteria;Actinobacteria
+bin.10	92.77	1.261	0.64	8885	2809869	0.917173481	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.13	92.55	0.282	0.638	8431	3054377	1.057810983	Bacteria	Bacteria	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.22	92.51	2.615	0.573	6484	2678007	0.581634087	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.83	92.22	2.056	0.68	13407	2459580	0.706632531	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.12	91.66	1.453	0.623	14954	3279077	0.955996067	Bacteria	Bacteria	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.33	91.5	2.272	0.65	7992	3721583	0.178275109	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae
+bin.34	91.25	0	0.644	8200	2655338	0.938498311	Bacteria	Bacteria	Bacteria;Proteobacteria;Betaproteobacteria;Burkholderiales
+bin.53	91.15	0.8	0.651	16850	2603423	0.181383524	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.84	90.86	1.718	0.657	14371	2956102	8.204036197	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.51	90.71	1.063	0.664	7300	3089989	2.094078429	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.69	90.29	2	0.645	6411	2721633	0.204788098	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.76	89.92	2.066	0.657	6380	2466435	12.80918992	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.81	89.84	1.47	0.595	4846	1906484	27.52505293	Euryarchaeota	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.70	89.67	0.847	0.68	4699	2744797	0.567317243	Bacteria	Bacteria	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.2	89.63	2.356	0.687	12405	2703765	1.698313997	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.62	89.4	1.869	0.447	268131	1037184	0.108350627	Archaea	Archaea;Candidatus Nanohaloarchaeota;Nanohaloarchaea;Nanohaloarchaea archaeon SG9	Archaea;Candidatus Nanohaloarchaeota;Nanohaloarchaea
+bin.24	89.27	1.795	0.65	8023	3353205	0.135792784	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.77	89.18	1.448	0.73	10870	2670516	9.423363901	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.18	87.75	1.762	0.696	4711	2778251	0.663819485	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.86	87.64	2.133	0.676	6167	2435471	11.06220146	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.60	87.54	0.634	0.658	8878	2437932	0.948976055	Bacteria	Bacteria	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.66	87.14	0	0.464	43621	1097787	0.156906153	Archaea	Archaea;Candidatus Nanohaloarchaeota;Nanohaloarchaea;Nanohaloarchaea archaeon SG9	Archaea;Candidatus Nanohaloarchaeota;Nanohaloarchaea
+bin.16	86.96	1.276	0.706	4885	2115032	0.855895814	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae;Halobacterium	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.55	86.13	1.4	0.675	7135	2514956	0.249117575	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.74	86	3.6	0.697	7676	2857481	0.449633775	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.20	85.94	0.895	0.697	4624	2951147	2.002462849	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.38	85.75	0.8	0.706	4801	2415797	13.53947423	Euryarchaeota	Bacteria	Bacteria;Terrabacteria group;Actinobacteria;Actinobacteria
+bin.37	84.9	2.361	0.678	4503	2488760	2.430755303	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.59	84.64	3.846	0.707	9296	2830978	1.045863461	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.4	84.03	0	0.449	13350	887108	0.175100948	Archaea	Archaea;Candidatus Nanohaloarchaeota;Nanohaloarchaea;Nanohaloarchaea archaeon SG9	Archaea;Candidatus Nanohaloarchaeota;Nanohaloarchaea
+bin.47	82.99	1.766	0.65	6238	2722551	0.540753061	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.71	82.92	0.564	0.681	3181	2429326	0.330922695	Bacteria	Bacteria	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.3	82.9	3.297	0.69	4364	3093298	3.133233363	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.80	82.87	2.765	0.697	8057	2446296	0.728650675	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.72	82.86	2.364	0.616	5154	3453679	2.645909209	Bacteria	Bacteria	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.21	82.72	4.415	0.7	6886	2162581	8.478211496	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.29	82.27	6.242	0.708	4295	2400063	1.491796497	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae
+bin.88	82.18	2.553	0.662	3574	2099664	0.851966363	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.31	81.87	5.46	0.677	4231	2422757	23.3076447	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.27	81.7	1.666	0.703	4157	2602580	3.931223074	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.32	81.54	1.6	0.697	4218	2612197	1.473420599	Euryarchaeota	Bacteria	Bacteria;Terrabacteria group;Actinobacteria;Actinobacteria
+bin.25	81.23	2.166	0.637	5164	2793438	8.504386452	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.87	81.04	3.133	0.613	5061	2694110	1.563521443	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.58	81.03	1.724	0.502	4473	785653	1.041828661	Bacteria	Bacteria	Bacteria;Proteobacteria;Gammaproteobacteria;Chromatiales
+bin.39	80.97	0	0.458	5268	616685	4.42993528	Bacteria	Bacteria	Bacteria;Proteobacteria;Gammaproteobacteria
+bin.28	80.88	3.566	0.696	3806	2876592	1.088696312	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.11	80.08	2.23	0.688	3687	2200091	0.948856147	Gammaproteobacteria	Bacteria;Proteobacteria	Bacteria;Proteobacteria;Gammaproteobacteria;Chromatiales
+bin.14	79.5	1.306	0.647	5805	2613039	0.08901716	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.49	79.23	1.702	0.637	5323	2236126	22.36360785	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.40	79.2	1.333	0.643	4142	2119876	1.41164773	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.44	78.83	2.41	0.658	4365	4202192	0.109027534	Deltaproteobacteria	Bacteria	Bacteria;Proteobacteria;Deltaproteobacteria
+bin.73	78.79	2.2	0.673	3724	1469027	2.841706973	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.45	78.78	0.982	0.667	4286	2172163	0.45491817	Halobacteriaceae	Archaea	Archaea;unclassified Archaea;unclassified Archaea
+bin.57	78.67	2.281	0.693	5589	1966988	12.2381381	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae;Halorubrum;Halorubrum trapanicum	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae;Halorubrum;Halorubrum trapanicum
+bin.78	78.5	3.503	0.652	5351	3330855	0.435455209	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.68	78.22	5	0.68	10518	2572786	0.277170466	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.52	78.01	1.066	0.677	3525	1618410	0.263887689	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.54	77.81	3.23	0.712	3975	2541424	0.159698867	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.48	76.91	2.301	0.69	3240	2189696	1.237213178	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.90	76.83	2.804	0.716	3265	2349948	2.670076624	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae
+bin.85	76.7	6.373	0.678	4789	2117300	0.886312368	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.5	75.48	0.906	0.642	6027	2636077	0.005542521	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae
+bin.91	75.41	1.646	0.701	3002	2346340	0.517660973	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.15	75.15	2.215	0.688	2789	2616278	0.520710667	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.64	75.1	1.533	0.658	3129	1918756	2.441232823	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.7	74.92	1.615	0.652	4719	2069396	0.096169606	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.23	74.77	2.2	0.688	4199	1595022	0.497326267	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.93	74.23	2	0.671	4858	2284265	2.743934319	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.89	74.15	4.964	0.704	4509	2540070	0.693086382	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.82	74.03	1.2	0.682	3137	2161520	1.984974476	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.75	73.94	2.021	0.67	2547	1954103	0.161516535	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.26	72.99	1.233	0.663	5746	1892619	8.245156458	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.30	72.47	1.8	0.657	3389	2173558	3.238619352	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.1	72.18	1.063	0.668	8025	1841689	1.823601466	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.41	71.72	4.715	0.625	2678	1945603	1.306808653	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.65	70.94	3.24	0.67	4890	2329581	1.398405368	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
+bin.43	70.83	2.222	0.647	3151	1667980	90.2212644	Cyanobacteria	Bacteria;Cyanobacteria;Synechococcales;Synechococcaceae	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Synechococcales
+bin.92	70.58	4.895	0.705	3418	2602320	0.896755327	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae

@@ -37,7 +37,7 @@ def draw_clustermap(filename, ax, c, taxa):
 
 
 # main figure layout:
-font = {'family': 'arial', 'weight': 'normal', 'size': 12}
+font = {'family': 'arial', 'weight': 'normal', 'size': 10}
 plt.rc('font', **font)
 
 sns.set_palette("colorblind")
@@ -47,16 +47,16 @@ title_font=16
 
 
 print "making functions clustermaps"
-os.system("python make_heatmaps.py 5 5 "+" ".join(colors))
+os.system("python make_heatmaps.py 5 5.5 "+" ".join(colors))
 
-coordinates = [ [0.03,	0.08,	0.32,	0.86], 
-		[0.35,	0.08,	0.32,	0.86], 
-		[0.67,	0.08,	0.32,	0.86] ]
+coordinates = [ [0.03,	0.06,	0.32,	0.88], 
+		[0.35,	0.06,	0.32,	0.88], 
+		[0.67,	0.06,	0.32,	0.88] ]
 labels = ["A", "B", "C"]
 for i,taxa in enumerate(["All", "Archaea", "Bacteria"]):
 	ax = fig.add_axes(coordinates[i])
 	draw_clustermap(taxa+".png", ax, colors, taxa)
-	ax.annotate(labels[i], xy=(0.05, 1.01), xycoords="axes fraction", fontsize=20)
+	ax.annotate(labels[i], xy=(0.05, 1.01), xycoords="axes fraction", fontsize=16)
 
 
 print "making legend..."
@@ -66,7 +66,7 @@ legend_elements = [Patch(facecolor=colors[0], edgecolor='k', label='2014', linew
         Patch(facecolor=colors[1], edgecolor='k', label='2015', linewidth=1),
         Patch(facecolor=colors[2], edgecolor='k', label='2016', linewidth=1),
         Patch(facecolor=colors[3], edgecolor='k', label='2017', linewidth=1)]
-ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=True, facecolor='w', ncol=4, columnspacing=1, handlelength=1, prop={'size': 16})
+ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=True, facecolor='w', ncol=4, columnspacing=1, handlelength=1, prop={'size': 12})
 
 
 #plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	

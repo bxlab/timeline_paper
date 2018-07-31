@@ -75,21 +75,48 @@ def draw_boxplots(data, taxa, ax, col):
 	sns.swarmplot(data=values, size=4, edgecolor="black", linewidth=1, ax=ax, palette=pal)
 
 	ax.set_xticklabels(keys)
-	for tick in ax.get_xticklabels(): tick.set_rotation(45)
+	for tick in ax.get_xticklabels(): tick.set_rotation(30)
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
+	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
 
 
+def get_max_min_in_dict(dictionary):
+	maxs=[]; mins=[]
+	for key in dictionary:
+		maxs.append(max(dictionary[key]))
+		mins.append(min(dictionary[key]))
+	return max(maxs), min(mins)
+
+
+def draw_signifficance_bars(df, ax, inc_mod=1):
+	max_val,min_val = get_max_min_in_dict(df)
+	h = (max_val-min_val)*1.1 + min_val
+	inc = (h-min_val)*0.05*inc_mod
+
+	for x_st,s1 in enumerate(sorted(df)):
+		for x_fi,s2 in enumerate(sorted(df)):
+			s1_tot=float(s1.split("-")[0]) + float(s1.split("-")[0])/10
+			s2_tot=float(s2.split("-")[0]) + float(s2.split("-")[0])/10
+			if s1>=s2: continue
+			test=stats.ttest_ind(df[s1], df[s2])
+			if test.pvalue > 0.01: continue
+			elif test.pvalue > 0.001: m='*'
+			elif test.pvalue > 0.0001: m='**'
+			else: m='***'
+			ax.hlines(y=h, xmin=x_st, xmax=x_fi, linewidth=0.5, color='k')
+			ax.text((x_fi+x_st)/2.0, h-inc/3, m, ha='center', fontsize=6)
+			h+=inc
 
 
 
 ##################   START SCRIPT     ######################
 
 # main figure layout:
-font = {'family': 'arial', 'weight': 'normal', 'size': 12}
+font = {'family': 'arial', 'weight': 'normal', 'size': 10}
 plt.rc('font', **font)
-fig = plt.figure(figsize=(10, 6))
+fig = plt.figure(figsize=(10, 5))
 colors=["gold", "cyan", "royalblue", "magenta"]
-title_font=16
+title_font=14
 
 main = fig.add_subplot(111)
 #main.set_title("Taxa abundance recovery post-rain", fontsize=title_font, y=1.1)
@@ -112,13 +139,14 @@ for i, taxa in enumerate(taxa_data):
 	if i>1: i=i+2
 	ax = fig.add_subplot(2,4,i+1)
 	if i<2: ax.get_xaxis().set_ticks([])
-	ax.annotate(letter, xy=(-0.15, 1.02), xycoords="axes fraction", fontsize=title_font)
+	ax.annotate(letter, xy=(-0.15, 1.03), xycoords="axes fraction", fontsize=title_font)
 	if taxa=="Cytophagia": name="Bacteroidetes"
 	else: name=taxa
 	ax.set_title(name, fontsize=title_font)
 	data=taxa_data[taxa]
 	draw_boxplots(data, taxa, ax, colors)
-	if i<2: ax.get_xaxis().set_ticks([])
+	draw_signifficance_bars(data, ax)
+	if i<2: ax.get_xaxis().set_ticklabels(["","","",""])
 
 
 print "making domain abundance plot"
@@ -134,11 +162,12 @@ ax.annotate(letter, xy=(-0.05, 1.02), xycoords="axes fraction", fontsize=title_f
 ax.set_title(taxa, fontsize=title_font)
 data=taxa_data[taxa]
 draw_boxplots(data, taxa, ax, colors)
-if i==0: ax.set_ylabel("Relative taxa abundance (%)")
+draw_signifficance_bars(data, ax, 0.5)
+ax.set_ylabel("Relative taxa abundance (%)")
 
 
 
-plt.tight_layout()
+plt.tight_layout(rect=[-0.02, -0.0, 1, 1], w_pad=-0.5)
 plt.savefig("figure_S3.png", dpi=300)
 #plt.show()
 

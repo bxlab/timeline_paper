@@ -18,7 +18,7 @@ from sklearn.preprocessing import StandardScaler
 from matplotlib.colors import LogNorm
 
 
-def draw_clustermap(filename, ax, c, taxa):
+def draw_clustermap(filename, ax, c):
 	folder = os.path.dirname(os.path.realpath(__file__))
 	im = plt.imread(get_sample_data(folder + "/" + filename))
 	ax.imshow(im)
@@ -26,10 +26,6 @@ def draw_clustermap(filename, ax, c, taxa):
 	ax.set_yticklabels([])
 	for spine in ax.spines.values(): spine.set_visible(False)
 	ax.yaxis.set_ticks_position('none')
-	if taxa=="All":
-		ax.set_ylabel("Differentially abundant KEGG pathways", labelpad=-10)
-		taxa="All taxa"
-	ax.set_title(taxa, fontsize=title_font)
 
 
 
@@ -45,18 +41,20 @@ fig = plt.figure(figsize=(10, 6))
 colors=["gold", "cyan", "royalblue", "magenta"]
 title_font=16
 
+os.system("python make_heatmap.py long_contigs_5kb.tab 9 10 "+" ".join(colors))
 
-print "making functions clustermaps"
-os.system("python make_heatmaps.py 5 5 "+" ".join(colors))
+ax = fig.add_axes([0.03,  0.08,   0.48,   0.86])
+draw_clustermap("heatmap_log.png", ax, colors)
+ax.annotate("A", xy=(0.05, 1.02), xycoords="axes fraction", fontsize=title_font)
+ax.set_ylabel("Co-assembled contigs (5kb+)", labelpad=-10)
+ax.set_title("Contig abundance (log)", fontsize=title_font)
 
-coordinates = [ [0.03,	0.08,	0.32,	0.86], 
-		[0.35,	0.08,	0.32,	0.86], 
-		[0.67,	0.08,	0.32,	0.86] ]
-labels = ["A", "B", "C"]
-for i,taxa in enumerate(["All", "Archaea", "Bacteria"]):
-	ax = fig.add_axes(coordinates[i])
-	draw_clustermap(taxa+".png", ax, colors, taxa)
-	ax.annotate(labels[i], xy=(0.05, 1.01), xycoords="axes fraction", fontsize=20)
+
+ax = fig.add_axes([0.51,  0.08,   0.48,   0.86])
+draw_clustermap("heatmap_std.png", ax, colors)
+ax.annotate("B", xy=(0.05, 1.02), xycoords="axes fraction", fontsize=title_font)
+ax.set_title("Contig abundance (normalized)", fontsize=title_font)
+
 
 
 print "making legend..."
@@ -66,11 +64,13 @@ legend_elements = [Patch(facecolor=colors[0], edgecolor='k', label='2014', linew
         Patch(facecolor=colors[1], edgecolor='k', label='2015', linewidth=1),
         Patch(facecolor=colors[2], edgecolor='k', label='2016', linewidth=1),
         Patch(facecolor=colors[3], edgecolor='k', label='2017', linewidth=1)]
-ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=True, facecolor='w', ncol=4, columnspacing=1, handlelength=1, prop={'size': 16})
+ax.legend(handles=legend_elements, loc="lower center", frameon=True,
+	framealpha=1, facecolor='w', ncol=4, columnspacing=1, handlelength=1, 
+	prop={'size': 12}, fontsize=12)
 
 
 #plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
-plt.savefig("figure_S4.png", dpi=300)
+plt.savefig("figure_S6.png", dpi=300)
 plt.grid()
 #plt.show()
 

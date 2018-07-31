@@ -90,9 +90,9 @@ def draw_pcoa(PC1_expl, PC2_expl, df, ax, col):
 		if "2017" in label: c=col[3]
 		plots[label] = ax.scatter(df['x'][i], df['y'][i], c=c, edgecolors='k', marker='o', s=50, linewidth=0.5)
 	
-	ax.legend((plots["2014-09"],plots["2015-06"],plots["2016-02"],plots["2017-02"]),
-		("2014-09","2015-06","2016-02","2017-02"), columnspacing=1, handlelength=0,
-		numpoints=1, loc='upper left', ncol=2, framealpha=1, frameon=True, facecolor='w')
+	#ax.legend((plots["2014-09"],plots["2015-06"],plots["2016-02"],plots["2017-02"]),
+	#	("2014-09","2015-06","2016-02","2017-02"), columnspacing=1, handlelength=0,
+	#	numpoints=1, loc='upper left', ncol=2, framealpha=1, frameon=True, facecolor='w')
 
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
@@ -112,23 +112,49 @@ def draw_boxplots(data, taxa, ax, col):
 	sns.swarmplot(data=values, size=4, edgecolor="black", linewidth=1, ax=ax, palette=pal)
 
 	ax.set_xticklabels(keys)
-	for tick in ax.get_xticklabels(): tick.set_rotation(45)
+	for tick in ax.get_xticklabels(): tick.set_rotation(30)
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
+	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
 
 
+def get_max_min_in_dict(dictionary):
+        maxs=[]; mins=[]
+        for key in dictionary:
+                maxs.append(max(dictionary[key]))
+                mins.append(min(dictionary[key]))
+        return max(maxs), min(mins)
 
 
+def draw_signifficance_bars(df, ax, inc_mod=1):
+	max_val,min_val = get_max_min_in_dict(df)
+	h = (max_val-min_val)*1.1 + min_val
+	inc = (h-min_val)*0.05*inc_mod
 
-##################   START SCRIPT     ######################
+	for x_st,s1 in enumerate(sorted(df)):
+		for x_fi,s2 in enumerate(sorted(df)):
+			s1_tot=float(s1.split("-")[0]) + float(s1.split("-")[0])/10
+			s2_tot=float(s2.split("-")[0]) + float(s2.split("-")[0])/10
+			if s1>=s2: continue
+			test=stats.ttest_ind(df[s1], df[s2])
+			if test.pvalue > 0.01: continue
+			elif test.pvalue > 0.001: m='*'
+			elif test.pvalue > 0.0001: m='**'
+			else: m='***'
+			ax.hlines(y=h, xmin=x_st, xmax=x_fi, linewidth=0.5, color='k')
+			ax.text((x_fi+x_st)/2.0, h-inc/3, m, ha='center', fontsize=6)
+			h+=inc
+
+
+###################     START SCRIPT     ######################
 
 # main figure layout:
-font = {'family': 'arial', 'weight': 'normal', 'size': 12}
+font = {'family': 'arial', 'weight': 'normal', 'size': 10}
 plt.rc('font', **font)
 
 sns.set_palette("colorblind")
 fig = plt.figure(figsize=(10, 5))
 colors=["gold", "cyan", "royalblue", "magenta"]
-title_font=16
+title_font=14
 
 
 print "making phyla abundance plot"
@@ -152,13 +178,15 @@ for i, taxa in enumerate(taxa_data):
 	letter=labels[i]
 	if i>1: i=i+2
 	ax = fig.add_subplot(2,4,i+1)
-	ax.annotate(letter, xy=(-0.15, 1.02), xycoords="axes fraction", fontsize=title_font)
+	ax.annotate(letter, xy=(-0.16, 1.03), xycoords="axes fraction", fontsize=title_font)
 	if taxa=="Cytophagia": name="Bacteroidetes"
 	else: name=taxa
 	ax.set_title(name, fontsize=title_font)
 	data=taxa_data[taxa]
 	draw_boxplots(data, taxa, ax, colors)
-	if i<2: ax.get_xaxis().set_ticks([])
+	draw_signifficance_bars(data, ax)
+	if i<2: ax.get_xaxis().set_ticklabels(["","","",""])
+	else: ax.get_xaxis().set_ticklabels(["2014","2015", "2016", "2017"])
 
 
 print "making PCoA plot..."
@@ -173,9 +201,21 @@ ax.set_title("PCA of Weighted Unifrac matrix", fontsize=title_font)
 ax.annotate("E", xy=(-0.15, 1.02), xycoords="axes fraction", fontsize=title_font)
 
 
+print "making legend..."
+ax = fig.add_axes([0.0, 0.0, 1, 0.05])
+ax.axis("off")
+legend_elements = [Patch(facecolor=colors[0], edgecolor='k', label='2014', linewidth=1),
+        Patch(facecolor=colors[1], edgecolor='k', label='2015', linewidth=1),
+        Patch(facecolor=colors[2], edgecolor='k', label='2016', linewidth=1),
+        Patch(facecolor=colors[3], edgecolor='k', label='2017', linewidth=1)]
+ax.legend(handles=legend_elements, loc="lower center", frameon=True,
+	framealpha=1, facecolor='w', ncol=4, columnspacing=1, handlelength=1,
+	prop={'size': 12}, fontsize=12)
+
+
 
 #plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
-plt.tight_layout(w_pad=-1)
+plt.tight_layout(w_pad=-1, rect=[-0.02, 0.06, 1, 1])
 plt.savefig("figure_S1.png", dpi=300)
 #plt.show()
 
