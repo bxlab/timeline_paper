@@ -43,15 +43,15 @@ x=float(sys.argv[2])
 y=float(sys.argv[3])
 
 print "making log heat map..."
-sns.set(font_scale=1)
-g = sns.clustermap(log_df, figsize=(x,y), cmap="Blues",
+sns.set(font_scale=1.5)
+g = sns.clustermap(log_df, figsize=(x,y), cmap="YlGn",
 	yticklabels=False, xticklabels=False, col_colors=lut)
 plt.savefig("heatmap_log.png", bbox_inches="tight", dpi=600)
 plt.clf()
 
 
 print "making standard heat map..."
-g = sns.clustermap(std_df, figsize=(x,y), cmap="Blues", vmin=0, vmax=1,
+g = sns.clustermap(std_df, figsize=(x,y), cmap="YlGn", vmin=0, vmax=1,
 	yticklabels=False, xticklabels=False, col_colors=lut)
 plt.savefig("heatmap_std.png", bbox_inches="tight", dpi=600)
 plt.clf()

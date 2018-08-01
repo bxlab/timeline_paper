@@ -246,7 +246,7 @@ def draw_matrix_clustermap(filename, ax, c):
 	ax.set_yticklabels([])
 	for spine in ax.spines.values(): spine.set_visible(False)
 	ax.yaxis.set_ticks_position('none') 
-	ax.set_title("Dissimilarity clustering", fontsize=title_font)
+	ax.set_title("Weighted dissimilarity clustering", fontsize=title_font)
 	ax.yaxis.labelpad = 0
 	ax.set_ylabel("16S rDNA samples")
 
