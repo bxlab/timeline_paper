@@ -116,7 +116,7 @@ def plot_even_clustermap(df):
 		if "2017" in sample: lut.append(sys.argv[6])
 
 	df = df.div(df.max(axis=1), axis=0)
-	g = sns.clustermap(df, cmap="YlGn", figsize=(float(sys.argv[1]), float(sys.argv[2])), vmin=0, vmax=1,
+	g = sns.clustermap(df, figsize=(float(sys.argv[1]), float(sys.argv[2])), vmin=0, vmax=1, cmap="magma",
 	yticklabels=False, xticklabels=False, col_cluster=True, col_colors=lut)
 
 	plt.subplots_adjust(left=0.05, bottom=0.1, right=0.6, top=0.95)

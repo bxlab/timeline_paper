@@ -75,7 +75,7 @@ lut = color_labels(df)
 
 
 sns.set(font_scale=1)
-g = sns.clustermap(df, figsize=(10,5), col_colors=lut, col_cluster=False, yticklabels=True, xticklabels=True, cmap="YlGn", vmin=0)
+g = sns.clustermap(df, figsize=(10,5), col_colors=lut, col_cluster=False, yticklabels=True, xticklabels=True, vmin=0, cmap="magma")
 plt.setp(g.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
 
 g.ax_heatmap.set_title("Abundance of photosynthetic MAGs", y=1.1, fontsize=14)

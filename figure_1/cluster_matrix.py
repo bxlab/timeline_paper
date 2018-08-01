@@ -23,7 +23,7 @@ for sample in z.columns.values:
 # make heat map
 sns.set(font_scale=0.6)
 size=float(sys.argv[2])
-g = sns.clustermap(z, figsize=(size,size), col_colors=lut, row_colors=lut, col_cluster=True, xticklabels=False, yticklabels=False, cmap="YlGn_r", metric="correlation")
+g = sns.clustermap(z, figsize=(size,size), col_colors=lut, row_colors=lut, col_cluster=True, xticklabels=False, yticklabels=False, cmap="magma", metric="correlation")
 
 
 plt.subplots_adjust(left=0, right=1, top=0.99, bottom=0.01)

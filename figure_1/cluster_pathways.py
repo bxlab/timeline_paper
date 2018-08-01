@@ -31,7 +31,7 @@ for sample in df.columns.values:
 sns.set(font_scale=0.6)
 x=float(sys.argv[2])
 y=float(sys.argv[3])
-g = sns.clustermap(df, figsize=(x,y), col_colors=lut, col_cluster=True, yticklabels=True, xticklabels=False, cmap="YlGn", vmin=0, vmax=1)
+g = sns.clustermap(df, figsize=(x,y), col_colors=lut, col_cluster=True, yticklabels=True, xticklabels=False, cmap="magma", vmin=0, vmax=1)
 #plt.setp(g.ax_heatmap.yaxis.get_majorticklabels(), fontsize=6)
 plt.subplots_adjust(left=0, right=1, top=0.99, bottom=0.01)
 
