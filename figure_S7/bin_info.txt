@@ -1,9 +1,9 @@
 BIN	completeness	contamination	GC	N50	size (bp)	After/Before fold change	CheckM taxonomy	metaWRAP taxonomy	Consensus taxonomy (Taxator-tk + Kraken + metaWRAP)
 bin.algae	NA	NA	0.556	9621	9945709	1.410167872	NA	Eukaryota	Eukaria;Plantae;Chlorophyta
 bin.61	98.01	1.702	0.676	13193	2907746	4.421333559	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
-bin.63	97.77	0.222	0.439	18977	3489855	595.3363753	Cyanobacteria	Bacteria;Cyanobacteria;Chroococcales;Aphanothecaceae	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales
+bin.63	97.77	0.222	0.439	18977	3489855	595.3363753	Cyanobacteria	Bacteria;Cyanobacteria;Chroococcales;Aphanothecaceae	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales;Chroococcaceae;Dactylococcopsis 
 bin.6	97.05	0.816	0.643	36692	1787608	0.096452557	Euryarchaeota	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
-bin.9	96.22	1.333	0.483	8198	3548370	0.4297734	Cyanobacteria	Bacteria;Cyanobacteria	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Oscillatoriales
+bin.9	96.22	1.333	0.483	8198	3548370	0.4297734	Cyanobacteria	Bacteria;Cyanobacteria	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales;Aphanothecaceae;Halothece cluster;Halothece
 bin.46	95.95	1.725	0.676	18319	2506034	22.5028604	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
 bin.19	95.48	1.207	0.637	8367	2396020	18.30245377	Gammaproteobacteria	Bacteria;Proteobacteria;Gammaproteobacteria	Bacteria;Proteobacteria;Gammaproteobacteria;Chromatiales;Ectothiorhodospiraceae
 bin.35	94.84	2.815	0.666	12192	3181126	2.200165097	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
@@ -89,5 +89,5 @@ bin.30	72.47	1.8	0.657	3389	2173558	3.238619352	Halobacteriaceae	Archaea;Euryarc
 bin.1	72.18	1.063	0.668	8025	1841689	1.823601466	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.41	71.72	4.715	0.625	2678	1945603	1.306808653	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
 bin.65	70.94	3.24	0.67	4890	2329581	1.398405368	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria
-bin.43	70.83	2.222	0.647	3151	1667980	90.2212644	Cyanobacteria	Bacteria;Cyanobacteria;Synechococcales;Synechococcaceae	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Synechococcales
+bin.43	70.83	2.222	0.647	3151	1667980	90.2212644	Cyanobacteria	Bacteria;Cyanobacteria;Synechococcales;Synechococcaceae	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales;Aphanothecaceae;Halothece cluster;Halothece
 bin.92	70.58	4.895	0.705	3418	2602320	0.896755327	Halobacteriaceae	Archaea;Euryarchaeota;Halobacteria	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
