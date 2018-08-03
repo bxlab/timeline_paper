@@ -1,0 +1,94 @@
+#Bin ID	GC content	Coverage	Taxonomy
+bin.62	45	10	Archaea;Candidatus Nanohaloarchaeota;Nanohaloarchaea
+bin.66	46	23	Archaea;Candidatus Nanohaloarchaeota;Nanohaloarchaea
+bin.4	45	8	Archaea;Candidatus Nanohaloarchaeota;Nanohaloarchaea
+bin.46	68	18	Archaea;Euryarchaeota;Halobacteria
+bin.10	64	42	Archaea;Euryarchaeota;Halobacteria
+bin.22	57	7	Archaea;Euryarchaeota;Halobacteria
+bin.84	66	14	Archaea;Euryarchaeota;Halobacteria
+bin.51	66	13	Archaea;Euryarchaeota;Halobacteria
+bin.76	66	15	Archaea;Euryarchaeota;Halobacteria
+bin.24	65	131	Archaea;Euryarchaeota;Halobacteria
+bin.77	73	11	Archaea;Euryarchaeota;Halobacteria
+bin.20	70	17	Archaea;Euryarchaeota;Halobacteria
+bin.37	68	16	Archaea;Euryarchaeota;Halobacteria
+bin.47	65	9	Archaea;Euryarchaeota;Halobacteria
+bin.28	70	13	Archaea;Euryarchaeota;Halobacteria
+bin.14	65	47	Archaea;Euryarchaeota;Halobacteria
+bin.40	64	6	Archaea;Euryarchaeota;Halobacteria
+bin.52	68	35	Archaea;Euryarchaeota;Halobacteria
+bin.85	68	12	Archaea;Euryarchaeota;Halobacteria
+bin.23	69	28	Archaea;Euryarchaeota;Halobacteria
+bin.89	70	19	Archaea;Euryarchaeota;Halobacteria
+bin.41	63	6	Archaea;Euryarchaeota;Halobacteria
+bin.65	67	11	Archaea;Euryarchaeota;Halobacteria
+bin.61	68	17	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.6	64	8	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.35	67	10	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.67	70	22	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.79	62	8	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.83	68	29	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.53	65	26	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.69	65	26	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.81	60	4	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.2	69	8	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.18	70	59	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.86	68	19	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.16	71	21	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.55	68	10	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.74	70	7	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.59	71	8	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.3	69	119	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.80	70	14	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.21	70	8	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.88	66	5	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.31	68	34	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.27	70	7	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.25	64	14	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.87	61	5	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.49	64	5	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.73	67	13	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.78	65	15	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.68	68	8	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.54	71	22	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.48	69	17	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.91	70	5	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.15	69	50	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.64	66	16	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.7	65	7	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.93	67	10	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.82	68	15	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.75	67	222	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.26	66	7	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.30	66	56	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.1	67	5	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.92	71	5	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.36	69	12	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae
+bin.33	65	10	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae
+bin.29	71	12	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae
+bin.90	72	5	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae
+bin.5	64	39	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae
+bin.50	69	9	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae;Halorubrum
+bin.57	69	6	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Haloferacaceae;Halorubrum
+bin.56	64	9	Archaea;Euryarchaeota;Halobacteria;Natrialbales;Natrialbaceae
+bin.45	67	18	Archaea;Euryarchaeota;Halobacteria;Haloferacales;Halorubraceae;Halolamina
+bin.13	64	7	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.12	62	31	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.70	68	41	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.60	66	7	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.71	68	39	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.72	62	5	Bacteria;FCB group;Bacteroidetes;Bacteroidetes;Bacteroidetes Order II. Incertae sedis;Rhodothermaceae;Salinibacter
+bin.34	64	6	Bacteria;Proteobacteria;Betaproteobacteria;Burkholderiales
+bin.44	66	5	Bacteria;Proteobacteria;Deltaproteobacteria
+bin.39	46	8	Bacteria;Proteobacteria;Gammaproteobacteria
+bin.58	50	6	Bacteria;Proteobacteria;Gammaproteobacteria;Chromatiales
+bin.11	69	23	Bacteria;Proteobacteria;Gammaproteobacteria;Chromatiales
+bin.19	64	8	Bacteria;Proteobacteria;Gammaproteobacteria;Chromatiales;Ectothiorhodospiraceae
+bin.42	73	19	Bacteria;Terrabacteria group;Actinobacteria;Actinobacteria
+bin.38	71	7	Bacteria;Terrabacteria group;Actinobacteria;Actinobacteria
+bin.32	70	6	Bacteria;Terrabacteria group;Actinobacteria;Actinobacteria
+bin.63	44	8	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales;Aphanothecaceae;Halothece cluster;Euhalothece 
+bin.9	48	229	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales;Aphanothecaceae;Halothece cluster;Halothece
+bin.43	65	4	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales;Aphanothecaceae;Halothece cluster;Halothece 
+bin.algae	56	24	Eukaria;Plantae;Chlorophyta
+bin.chloroplast	40	179	Eukaria;Plantae;Chlorophyta
