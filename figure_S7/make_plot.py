@@ -48,7 +48,7 @@ def filter_by_taxa(data, taxonomy):
 	df = pd.DataFrame()
 	for bin,row in data.iterrows():
 		taxa=taxonomy[bin]
-		if "Chlorophyta" in taxa or "Cyanobacteria" in taxa:
+		if "Cyanobacteria" in taxa:
 			bin = taxa.split(";")[-1] +" ("+bin+")"
 			if "Total" not in df:
 				df["Total"] = row
@@ -78,7 +78,7 @@ sns.set(font_scale=1)
 g = sns.clustermap(df, figsize=(10,5), col_colors=lut, col_cluster=False, yticklabels=True, xticklabels=True, vmin=0, cmap="magma")
 plt.setp(g.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
 
-g.ax_heatmap.set_title("Abundance of photosynthetic MAGs", y=1.1, fontsize=14)
+g.ax_heatmap.set_title("Abundance of Cyanobacteria MAGs", y=1.1, fontsize=14)
 plt.savefig("figure_S7.png", dpi=300, bbox_inches="tight")
 #plt.show()
 
