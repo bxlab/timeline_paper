@@ -38,8 +38,8 @@ def load_taxa(filename):
 	taxonomy={}
 	for line in open(filename):
 		cut = line.strip().split("\t")
-		bin=cut[0]
-		taxa=cut[9]
+		bin=cut[1]
+		taxa=cut[2]
 		taxonomy[bin]=taxa
 	return taxonomy	
 
@@ -75,7 +75,7 @@ lut = color_labels(df)
 
 
 sns.set(font_scale=1)
-g = sns.clustermap(df, figsize=(10,5), col_colors=lut, col_cluster=False, yticklabels=True, xticklabels=True, vmin=0, cmap="magma")
+g = sns.clustermap(df, figsize=(10,5), col_colors=lut, col_cluster=False, row_cluster=False, yticklabels=["SG1_Halothece_65_4","SG1_Euhalothece_44_8","SG1_Halothece_48_229"], xticklabels=True, vmin=0, cmap="magma")
 plt.setp(g.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
 
 g.ax_heatmap.set_title("Abundance of Cyanobacteria MAGs", y=1.1, fontsize=14)
