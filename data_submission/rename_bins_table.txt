@@ -24,11 +24,11 @@ bin.41	63	6	Archaea;Euryarchaeota;Halobacteria
 bin.65	67	11	Archaea;Euryarchaeota;Halobacteria
 bin.61	68	17	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.6	64	8	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
-bin.35	67	10	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.35	67	9	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.67	70	22	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.79	62	8	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.83	68	29	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
-bin.53	65	26	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.53	65	25	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.69	65	26	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.81	60	4	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.2	69	8	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
@@ -43,7 +43,7 @@ bin.80	70	14	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.21	70	8	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.88	66	5	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.31	68	34	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
-bin.27	70	7	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
+bin.27	70	6	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.25	64	14	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.87	61	5	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
 bin.49	64	5	Archaea;Euryarchaeota;Halobacteria;Halobacteriales;Halobacteriaceae
@@ -90,5 +90,3 @@ bin.32	70	6	Bacteria;Terrabacteria group;Actinobacteria;Actinobacteria
 bin.63	44	8	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales;Aphanothecaceae;Halothece cluster;Euhalothece 
 bin.9	48	229	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales;Aphanothecaceae;Halothece cluster;Halothece
 bin.43	65	4	Bacteria;Terrabacteria group;Cyanobacteria;Cyanobacteria;Oscillatoriophycideae;Chroococcales;Aphanothecaceae;Halothece cluster;Halothece 
-bin.algae	56	24	Eukaria;Plantae;Chlorophyta
-bin.chloroplast	40	179	Eukaria;Plantae;Chlorophyta
