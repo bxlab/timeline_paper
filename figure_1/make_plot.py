@@ -83,7 +83,8 @@ def collapse_paths(pathway_abundances):
 		"Replication and repair",
 		"Amino acid metabolism",
 		"Signal transduction",
-		"Metabolism of other amino acids"]
+		"Metabolism of other amino acids",
+		"Transport and catabolism"]
 	for path,row in pathway_abundances.iterrows():
 		cut = path.split(";")
 		if cut[1] in to_collapse:
