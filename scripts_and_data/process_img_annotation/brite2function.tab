@@ -1,0 +1,526 @@
+01100	Metabolism;Global and overview maps;Metabolic
+01110	Metabolism;Global and overview maps;Biosynthesis
+01120	Metabolism;Global and overview maps;Microbial
+01130	Metabolism;Global and overview maps;Biosynthesis
+01200	Metabolism;Global and overview maps;Carbon
+01210	Metabolism;Global and overview maps;2-Oxocarboxylic
+01212	Metabolism;Global and overview maps;Fatty
+01230	Metabolism;Global and overview maps;Biosynthesis
+01220	Metabolism;Global and overview maps;Degradation
+00010	Metabolism;Carbohydrate metabolism;Glycolysis
+00020	Metabolism;Carbohydrate metabolism;Citrate
+00030	Metabolism;Carbohydrate metabolism;Pentose
+00040	Metabolism;Carbohydrate metabolism;Pentose
+00051	Metabolism;Carbohydrate metabolism;Fructose
+00052	Metabolism;Carbohydrate metabolism;Galactose
+00053	Metabolism;Carbohydrate metabolism;Ascorbate
+00500	Metabolism;Carbohydrate metabolism;Starch
+00520	Metabolism;Carbohydrate metabolism;Amino
+00620	Metabolism;Carbohydrate metabolism;Pyruvate
+00630	Metabolism;Carbohydrate metabolism;Glyoxylate
+00640	Metabolism;Carbohydrate metabolism;Propanoate
+00650	Metabolism;Carbohydrate metabolism;Butanoate
+00660	Metabolism;Carbohydrate metabolism;C5-Branched
+00562	Metabolism;Carbohydrate metabolism;Inositol
+00190	Metabolism;Energy metabolism;Oxidative
+00195	Metabolism;Energy metabolism;Photosynthesis
+00196	Metabolism;Energy metabolism;Photosynthesis
+00710	Metabolism;Energy metabolism;Carbon
+00720	Metabolism;Energy metabolism;Carbon
+00680	Metabolism;Energy metabolism;Methane
+00910	Metabolism;Energy metabolism;Nitrogen
+00920	Metabolism;Energy metabolism;Sulfur
+00061	Metabolism;Lipid metabolism;Fatty
+00062	Metabolism;Lipid metabolism;Fatty
+00071	Metabolism;Lipid metabolism;Fatty
+00072	Metabolism;Lipid metabolism;Synthesis
+00073	Metabolism;Lipid metabolism;Cutin,
+00100	Metabolism;Lipid metabolism;Steroid
+00120	Metabolism;Lipid metabolism;Primary
+00121	Metabolism;Lipid metabolism;Secondary
+00140	Metabolism;Lipid metabolism;Steroid
+00561	Metabolism;Lipid metabolism;Glycerolipid
+00564	Metabolism;Lipid metabolism;Glycerophospholipid
+00565	Metabolism;Lipid metabolism;Ether
+00600	Metabolism;Lipid metabolism;Sphingolipid
+00590	Metabolism;Lipid metabolism;Arachidonic
+00591	Metabolism;Lipid metabolism;Linoleic
+00592	Metabolism;Lipid metabolism;alpha-Linolenic
+01040	Metabolism;Lipid metabolism;Biosynthesis
+00230	Metabolism;Nucleotide metabolism;Purine
+00240	Metabolism;Nucleotide metabolism;Pyrimidine
+00250	Metabolism;Amino acid metabolism;Alanine,
+00260	Metabolism;Amino acid metabolism;Glycine,
+00270	Metabolism;Amino acid metabolism;Cysteine
+00280	Metabolism;Amino acid metabolism;Valine,
+00290	Metabolism;Amino acid metabolism;Valine,
+00300	Metabolism;Amino acid metabolism;Lysine
+00310	Metabolism;Amino acid metabolism;Lysine
+00220	Metabolism;Amino acid metabolism;Arginine
+00330	Metabolism;Amino acid metabolism;Arginine
+00340	Metabolism;Amino acid metabolism;Histidine
+00350	Metabolism;Amino acid metabolism;Tyrosine
+00360	Metabolism;Amino acid metabolism;Phenylalanine
+00380	Metabolism;Amino acid metabolism;Tryptophan
+00400	Metabolism;Amino acid metabolism;Phenylalanine,
+00410	Metabolism;Metabolism of other amino acids;beta-Alanine
+00430	Metabolism;Metabolism of other amino acids;Taurine
+00440	Metabolism;Metabolism of other amino acids;Phosphonate
+00450	Metabolism;Metabolism of other amino acids;Selenocompound
+00460	Metabolism;Metabolism of other amino acids;Cyanoamino
+00471	Metabolism;Metabolism of other amino acids;D-Glutamine
+00472	Metabolism;Metabolism of other amino acids;D-Arginine
+00473	Metabolism;Metabolism of other amino acids;D-Alanine
+00480	Metabolism;Metabolism of other amino acids;Glutathione
+00510	Metabolism;Glycan biosynthesis and metabolism;N-Glycan
+00513	Metabolism;Glycan biosynthesis and metabolism;Various
+00512	Metabolism;Glycan biosynthesis and metabolism;Mucin
+00515	Metabolism;Glycan biosynthesis and metabolism;Mannose
+00514	Metabolism;Glycan biosynthesis and metabolism;Other
+00532	Metabolism;Glycan biosynthesis and metabolism;Glycosaminoglycan
+00534	Metabolism;Glycan biosynthesis and metabolism;Glycosaminoglycan
+00533	Metabolism;Glycan biosynthesis and metabolism;Glycosaminoglycan
+00531	Metabolism;Glycan biosynthesis and metabolism;Glycosaminoglycan
+00563	Metabolism;Glycan biosynthesis and metabolism;Glycosylphosphatidylinositol
+00601	Metabolism;Glycan biosynthesis and metabolism;Glycosphingolipid
+00603	Metabolism;Glycan biosynthesis and metabolism;Glycosphingolipid
+00604	Metabolism;Glycan biosynthesis and metabolism;Glycosphingolipid
+00540	Metabolism;Glycan biosynthesis and metabolism;Lipopolysaccharide
+00550	Metabolism;Glycan biosynthesis and metabolism;Peptidoglycan
+00511	Metabolism;Glycan biosynthesis and metabolism;Other
+00730	Metabolism;Metabolism of cofactors and vitamins;Thiamine
+00740	Metabolism;Metabolism of cofactors and vitamins;Riboflavin
+00750	Metabolism;Metabolism of cofactors and vitamins;Vitamin
+00760	Metabolism;Metabolism of cofactors and vitamins;Nicotinate
+00770	Metabolism;Metabolism of cofactors and vitamins;Pantothenate
+00780	Metabolism;Metabolism of cofactors and vitamins;Biotin
+00785	Metabolism;Metabolism of cofactors and vitamins;Lipoic
+00790	Metabolism;Metabolism of cofactors and vitamins;Folate
+00670	Metabolism;Metabolism of cofactors and vitamins;One
+00830	Metabolism;Metabolism of cofactors and vitamins;Retinol
+00860	Metabolism;Metabolism of cofactors and vitamins;Porphyrin
+00130	Metabolism;Metabolism of cofactors and vitamins;Ubiquinone
+00900	Metabolism;Metabolism of terpenoids and polyketides;Terpenoid
+00902	Metabolism;Metabolism of terpenoids and polyketides;Monoterpenoid
+00909	Metabolism;Metabolism of terpenoids and polyketides;Sesquiterpenoid
+00904	Metabolism;Metabolism of terpenoids and polyketides;Diterpenoid
+00906	Metabolism;Metabolism of terpenoids and polyketides;Carotenoid
+00905	Metabolism;Metabolism of terpenoids and polyketides;Brassinosteroid
+00981	Metabolism;Metabolism of terpenoids and polyketides;Insect
+00908	Metabolism;Metabolism of terpenoids and polyketides;Zeatin
+00903	Metabolism;Metabolism of terpenoids and polyketides;Limonene
+00281	Metabolism;Metabolism of terpenoids and polyketides;Geraniol
+01052	Metabolism;Metabolism of terpenoids and polyketides;Type
+00522	Metabolism;Metabolism of terpenoids and polyketides;Biosynthesis
+01051	Metabolism;Metabolism of terpenoids and polyketides;Biosynthesis
+01059	Metabolism;Metabolism of terpenoids and polyketides;Biosynthesis
+01056	Metabolism;Metabolism of terpenoids and polyketides;Biosynthesis
+01057	Metabolism;Metabolism of terpenoids and polyketides;Biosynthesis
+00253	Metabolism;Metabolism of terpenoids and polyketides;Tetracycline
+00523	Metabolism;Metabolism of terpenoids and polyketides;Polyketide
+01054	Metabolism;Metabolism of terpenoids and polyketides;Nonribosomal
+01053	Metabolism;Metabolism of terpenoids and polyketides;Biosynthesis
+01055	Metabolism;Metabolism of terpenoids and polyketides;Biosynthesis
+00940	Metabolism;Biosynthesis of other secondary metabolites;Phenylpropanoid
+00945	Metabolism;Biosynthesis of other secondary metabolites;Stilbenoid,
+00941	Metabolism;Biosynthesis of other secondary metabolites;Flavonoid
+00944	Metabolism;Biosynthesis of other secondary metabolites;Flavone
+00942	Metabolism;Biosynthesis of other secondary metabolites;Anthocyanin
+00943	Metabolism;Biosynthesis of other secondary metabolites;Isoflavonoid
+00901	Metabolism;Biosynthesis of other secondary metabolites;Indole
+00403	Metabolism;Biosynthesis of other secondary metabolites;Indole
+00950	Metabolism;Biosynthesis of other secondary metabolites;Isoquinoline
+00960	Metabolism;Biosynthesis of other secondary metabolites;Tropane,
+01058	Metabolism;Biosynthesis of other secondary metabolites;Acridone
+00232	Metabolism;Biosynthesis of other secondary metabolites;Caffeine
+00965	Metabolism;Biosynthesis of other secondary metabolites;Betalain
+00966	Metabolism;Biosynthesis of other secondary metabolites;Glucosinolate
+00402	Metabolism;Biosynthesis of other secondary metabolites;Benzoxazinoid
+00311	Metabolism;Biosynthesis of other secondary metabolites;Penicillin
+00332	Metabolism;Biosynthesis of other secondary metabolites;Carbapenem
+00261	Metabolism;Biosynthesis of other secondary metabolites;Monobactam
+00331	Metabolism;Biosynthesis of other secondary metabolites;Clavulanic
+00521	Metabolism;Biosynthesis of other secondary metabolites;Streptomycin
+00524	Metabolism;Biosynthesis of other secondary metabolites;Neomycin,
+00525	Metabolism;Biosynthesis of other secondary metabolites;Acarbose
+00231	Metabolism;Biosynthesis of other secondary metabolites;Puromycin
+00401	Metabolism;Biosynthesis of other secondary metabolites;Novobiocin
+00404	Metabolism;Biosynthesis of other secondary metabolites;Staurosporine
+00405	Metabolism;Biosynthesis of other secondary metabolites;Phenazine
+00333	Metabolism;Biosynthesis of other secondary metabolites;Prodigiosin
+00254	Metabolism;Biosynthesis of other secondary metabolites;Aflatoxin
+00362	Metabolism;Xenobiotics biodegradation and metabolism;Benzoate
+00627	Metabolism;Xenobiotics biodegradation and metabolism;Aminobenzoate
+00364	Metabolism;Xenobiotics biodegradation and metabolism;Fluorobenzoate
+00625	Metabolism;Xenobiotics biodegradation and metabolism;Chloroalkane
+00361	Metabolism;Xenobiotics biodegradation and metabolism;Chlorocyclohexane
+00623	Metabolism;Xenobiotics biodegradation and metabolism;Toluene
+00622	Metabolism;Xenobiotics biodegradation and metabolism;Xylene
+00633	Metabolism;Xenobiotics biodegradation and metabolism;Nitrotoluene
+00642	Metabolism;Xenobiotics biodegradation and metabolism;Ethylbenzene
+00643	Metabolism;Xenobiotics biodegradation and metabolism;Styrene
+00791	Metabolism;Xenobiotics biodegradation and metabolism;Atrazine
+00930	Metabolism;Xenobiotics biodegradation and metabolism;Caprolactam
+00351	Metabolism;Xenobiotics biodegradation and metabolism;DDT
+00363	Metabolism;Xenobiotics biodegradation and metabolism;Bisphenol
+00621	Metabolism;Xenobiotics biodegradation and metabolism;Dioxin
+00626	Metabolism;Xenobiotics biodegradation and metabolism;Naphthalene
+00624	Metabolism;Xenobiotics biodegradation and metabolism;Polycyclic
+00365	Metabolism;Xenobiotics biodegradation and metabolism;Furfural
+00984	Metabolism;Xenobiotics biodegradation and metabolism;Steroid
+00980	Metabolism;Xenobiotics biodegradation and metabolism;Metabolism
+00982	Metabolism;Xenobiotics biodegradation and metabolism;Drug
+00983	Metabolism;Xenobiotics biodegradation and metabolism;Drug
+01010	Metabolism;Chemical structure transformation maps;Overview
+01060	Metabolism;Chemical structure transformation maps;Biosynthesis
+01061	Metabolism;Chemical structure transformation maps;Biosynthesis
+01062	Metabolism;Chemical structure transformation maps;Biosynthesis
+01063	Metabolism;Chemical structure transformation maps;Biosynthesis
+01064	Metabolism;Chemical structure transformation maps;Biosynthesis
+01065	Metabolism;Chemical structure transformation maps;Biosynthesis
+01066	Metabolism;Chemical structure transformation maps;Biosynthesis
+01070	Metabolism;Chemical structure transformation maps;Biosynthesis
+03020	Genetic Information Processing;Transcription;RNA
+03022	Genetic Information Processing;Transcription;Basal
+03040	Genetic Information Processing;Transcription;Spliceosome
+03010	Genetic Information Processing;Translation;Ribosome
+00970	Genetic Information Processing;Translation;Aminoacyl-tRNA
+03013	Genetic Information Processing;Translation;RNA
+03015	Genetic Information Processing;Translation;mRNA
+03008	Genetic Information Processing;Translation;Ribosome
+03060	Genetic Information Processing;Folding, sorting and degradation;Protein
+04141	Genetic Information Processing;Folding, sorting and degradation;Protein
+04130	Genetic Information Processing;Folding, sorting and degradation;SNARE
+04120	Genetic Information Processing;Folding, sorting and degradation;Ubiquitin
+04122	Genetic Information Processing;Folding, sorting and degradation;Sulfur
+03050	Genetic Information Processing;Folding, sorting and degradation;Proteasome
+03018	Genetic Information Processing;Folding, sorting and degradation;RNA
+03030	Genetic Information Processing;Replication and repair;DNA
+03410	Genetic Information Processing;Replication and repair;Base
+03420	Genetic Information Processing;Replication and repair;Nucleotide
+03430	Genetic Information Processing;Replication and repair;Mismatch
+03440	Genetic Information Processing;Replication and repair;Homologous
+03450	Genetic Information Processing;Replication and repair;Non-homologous
+03460	Genetic Information Processing;Replication and repair;Fanconi
+02010	Environmental Information Processing;Membrane transport;ABC
+02060	Environmental Information Processing;Membrane transport;Phosphotransferase
+03070	Environmental Information Processing;Membrane transport;Bacterial
+02020	Environmental Information Processing;Signal transduction;Two-component
+04014	Environmental Information Processing;Signal transduction;Ras
+04015	Environmental Information Processing;Signal transduction;Rap1
+04010	Environmental Information Processing;Signal transduction;MAPK
+04013	Environmental Information Processing;Signal transduction;MAPK
+04016	Environmental Information Processing;Signal transduction;MAPK
+04011	Environmental Information Processing;Signal transduction;MAPK
+04012	Environmental Information Processing;Signal transduction;ErbB
+04310	Environmental Information Processing;Signal transduction;Wnt
+04330	Environmental Information Processing;Signal transduction;Notch
+04340	Environmental Information Processing;Signal transduction;Hedgehog
+04341	Environmental Information Processing;Signal transduction;Hedgehog
+04350	Environmental Information Processing;Signal transduction;TGF-beta
+04390	Environmental Information Processing;Signal transduction;Hippo
+04391	Environmental Information Processing;Signal transduction;Hippo
+04392	Environmental Information Processing;Signal transduction;Hippo
+04370	Environmental Information Processing;Signal transduction;VEGF
+04371	Environmental Information Processing;Signal transduction;Apelin
+04630	Environmental Information Processing;Signal transduction;Jak-STAT
+04064	Environmental Information Processing;Signal transduction;NF-kappa
+04668	Environmental Information Processing;Signal transduction;TNF
+04066	Environmental Information Processing;Signal transduction;HIF-1
+04068	Environmental Information Processing;Signal transduction;FoxO
+04020	Environmental Information Processing;Signal transduction;Calcium
+04070	Environmental Information Processing;Signal transduction;Phosphatidylinositol
+04072	Environmental Information Processing;Signal transduction;Phospholipase
+04071	Environmental Information Processing;Signal transduction;Sphingolipid
+04024	Environmental Information Processing;Signal transduction;cAMP
+04022	Environmental Information Processing;Signal transduction;cGMP-PKG
+04151	Environmental Information Processing;Signal transduction;PI3K-Akt
+04152	Environmental Information Processing;Signal transduction;AMPK
+04150	Environmental Information Processing;Signal transduction;mTOR
+04075	Environmental Information Processing;Signal transduction;Plant
+04080	Environmental Information Processing;Signaling molecules and interaction;Neuroactive
+04060	Environmental Information Processing;Signaling molecules and interaction;Cytokine-cytokine
+04512	Environmental Information Processing;Signaling molecules and interaction;ECM-receptor
+04514	Environmental Information Processing;Signaling molecules and interaction;Cell
+04144	Cellular Processes;Transport and catabolism;Endocytosis
+04145	Cellular Processes;Transport and catabolism;Phagosome
+04142	Cellular Processes;Transport and catabolism;Lysosome
+04146	Cellular Processes;Transport and catabolism;Peroxisome
+04140	Cellular Processes;Transport and catabolism;Autophagy
+04138	Cellular Processes;Transport and catabolism;Autophagy
+04136	Cellular Processes;Transport and catabolism;Autophagy
+04137	Cellular Processes;Transport and catabolism;Mitophagy
+04139	Cellular Processes;Transport and catabolism;Mitophagy
+04110	Cellular Processes;Cell growth and death;Cell
+04111	Cellular Processes;Cell growth and death;Cell
+04112	Cellular Processes;Cell growth and death;Cell
+04113	Cellular Processes;Cell growth and death;Meiosis
+04114	Cellular Processes;Cell growth and death;Oocyte
+04210	Cellular Processes;Cell growth and death;Apoptosis
+04214	Cellular Processes;Cell growth and death;Apoptosis
+04215	Cellular Processes;Cell growth and death;Apoptosis
+04216	Cellular Processes;Cell growth and death;Ferroptosis
+04217	Cellular Processes;Cell growth and death;Necroptosis
+04115	Cellular Processes;Cell growth and death;p53
+04218	Cellular Processes;Cell growth and death;Cellular
+04510	Cellular Processes;Cellular community - eukaryotes;Focal
+04520	Cellular Processes;Cellular community - eukaryotes;Adherens
+04530	Cellular Processes;Cellular community - eukaryotes;Tight
+04540	Cellular Processes;Cellular community - eukaryotes;Gap
+04550	Cellular Processes;Cellular community - eukaryotes;Signaling
+02024	Cellular Processes;Cellular community - prokaryotes;Quorum
+05111	Cellular Processes;Cellular community - prokaryotes;Biofilm
+02025	Cellular Processes;Cellular community - prokaryotes;Biofilm
+02026	Cellular Processes;Cellular community - prokaryotes;Biofilm
+02030	Cellular Processes;Cell motility;Bacterial
+02040	Cellular Processes;Cell motility;Flagellar
+04810	Cellular Processes;Cell motility;Regulation
+04640	Organismal Systems;Immune system;Hematopoietic
+04610	Organismal Systems;Immune system;Complement
+04611	Organismal Systems;Immune system;Platelet
+04620	Organismal Systems;Immune system;Toll-like
+04624	Organismal Systems;Immune system;Toll
+04621	Organismal Systems;Immune system;NOD-like
+04622	Organismal Systems;Immune system;RIG-I-like
+04623	Organismal Systems;Immune system;Cytosolic
+04625	Organismal Systems;Immune system;C-type
+04650	Organismal Systems;Immune system;Natural
+04612	Organismal Systems;Immune system;Antigen
+04660	Organismal Systems;Immune system;T
+04658	Organismal Systems;Immune system;Th1
+04659	Organismal Systems;Immune system;Th17
+04657	Organismal Systems;Immune system;IL-17
+04662	Organismal Systems;Immune system;B
+04664	Organismal Systems;Immune system;Fc
+04666	Organismal Systems;Immune system;Fc
+04670	Organismal Systems;Immune system;Leukocyte
+04672	Organismal Systems;Immune system;Intestinal
+04062	Organismal Systems;Immune system;Chemokine
+04911	Organismal Systems;Endocrine system;Insulin
+04910	Organismal Systems;Endocrine system;Insulin
+04922	Organismal Systems;Endocrine system;Glucagon
+04923	Organismal Systems;Endocrine system;Regulation
+04920	Organismal Systems;Endocrine system;Adipocytokine
+03320	Organismal Systems;Endocrine system;PPAR
+04912	Organismal Systems;Endocrine system;GnRH
+04913	Organismal Systems;Endocrine system;Ovarian
+04915	Organismal Systems;Endocrine system;Estrogen
+04914	Organismal Systems;Endocrine system;Progesterone-mediated
+04917	Organismal Systems;Endocrine system;Prolactin
+04921	Organismal Systems;Endocrine system;Oxytocin
+04926	Organismal Systems;Endocrine system;Relaxin
+04918	Organismal Systems;Endocrine system;Thyroid
+04919	Organismal Systems;Endocrine system;Thyroid
+04928	Organismal Systems;Endocrine system;Parathyroid
+04916	Organismal Systems;Endocrine system;Melanogenesis
+04924	Organismal Systems;Endocrine system;Renin
+04614	Organismal Systems;Endocrine system;Renin-angiotensin
+04925	Organismal Systems;Endocrine system;Aldosterone
+04927	Organismal Systems;Endocrine system;Cortisol
+04260	Organismal Systems;Circulatory system;Cardiac
+04261	Organismal Systems;Circulatory system;Adrenergic
+04270	Organismal Systems;Circulatory system;Vascular
+04970	Organismal Systems;Digestive system;Salivary
+04971	Organismal Systems;Digestive system;Gastric
+04972	Organismal Systems;Digestive system;Pancreatic
+04976	Organismal Systems;Digestive system;Bile
+04973	Organismal Systems;Digestive system;Carbohydrate
+04974	Organismal Systems;Digestive system;Protein
+04975	Organismal Systems;Digestive system;Fat
+04979	Organismal Systems;Digestive system;Cholesterol
+04977	Organismal Systems;Digestive system;Vitamin
+04978	Organismal Systems;Digestive system;Mineral
+04962	Organismal Systems;Excretory system;Vasopressin-regulated
+04960	Organismal Systems;Excretory system;Aldosterone-regulated
+04961	Organismal Systems;Excretory system;Endocrine
+04964	Organismal Systems;Excretory system;Proximal
+04966	Organismal Systems;Excretory system;Collecting
+04724	Organismal Systems;Nervous system;Glutamatergic
+04727	Organismal Systems;Nervous system;GABAergic
+04725	Organismal Systems;Nervous system;Cholinergic
+04728	Organismal Systems;Nervous system;Dopaminergic
+04726	Organismal Systems;Nervous system;Serotonergic
+04720	Organismal Systems;Nervous system;Long-term
+04730	Organismal Systems;Nervous system;Long-term
+04723	Organismal Systems;Nervous system;Retrograde
+04721	Organismal Systems;Nervous system;Synaptic
+04722	Organismal Systems;Nervous system;Neurotrophin
+04744	Organismal Systems;Sensory system;Phototransduction
+04745	Organismal Systems;Sensory system;Phototransduction
+04740	Organismal Systems;Sensory system;Olfactory
+04742	Organismal Systems;Sensory system;Taste
+04750	Organismal Systems;Sensory system;Inflammatory
+04320	Organismal Systems;Development;Dorso-ventral
+04360	Organismal Systems;Development;Axon
+04380	Organismal Systems;Development;Osteoclast
+04211	Organismal Systems;Aging;Longevity
+04212	Organismal Systems;Aging;Longevity
+04213	Organismal Systems;Aging;Longevity
+04710	Organismal Systems;Environmental adaptation;Circadian
+04713	Organismal Systems;Environmental adaptation;Circadian
+04711	Organismal Systems;Environmental adaptation;Circadian
+04712	Organismal Systems;Environmental adaptation;Circadian
+04714	Organismal Systems;Environmental adaptation;Thermogenesis
+04626	Organismal Systems;Environmental adaptation;Plant-pathogen
+05200	Human Diseases;Cancers: Overview;Pathways
+05230	Human Diseases;Cancers: Overview;Central
+05231	Human Diseases;Cancers: Overview;Choline
+05202	Human Diseases;Cancers: Overview;Transcriptional
+05206	Human Diseases;Cancers: Overview;MicroRNAs
+05205	Human Diseases;Cancers: Overview;Proteoglycans
+05204	Human Diseases;Cancers: Overview;Chemical
+05203	Human Diseases;Cancers: Overview;Viral
+05210	Human Diseases;Cancers: Specific types;Colorectal
+05212	Human Diseases;Cancers: Specific types;Pancreatic
+05225	Human Diseases;Cancers: Specific types;Hepatocellular
+05226	Human Diseases;Cancers: Specific types;Gastric
+05214	Human Diseases;Cancers: Specific types;Glioma
+05216	Human Diseases;Cancers: Specific types;Thyroid
+05221	Human Diseases;Cancers: Specific types;Acute
+05220	Human Diseases;Cancers: Specific types;Chronic
+05217	Human Diseases;Cancers: Specific types;Basal
+05218	Human Diseases;Cancers: Specific types;Melanoma
+05211	Human Diseases;Cancers: Specific types;Renal
+05219	Human Diseases;Cancers: Specific types;Bladder
+05215	Human Diseases;Cancers: Specific types;Prostate
+05213	Human Diseases;Cancers: Specific types;Endometrial
+05224	Human Diseases;Cancers: Specific types;Breast
+05222	Human Diseases;Cancers: Specific types;Small
+05223	Human Diseases;Cancers: Specific types;Non-small
+05310	Human Diseases;Immune diseases;Asthma
+05322	Human Diseases;Immune diseases;Systemic
+05323	Human Diseases;Immune diseases;Rheumatoid
+05320	Human Diseases;Immune diseases;Autoimmune
+05321	Human Diseases;Immune diseases;Inflammatory
+05330	Human Diseases;Immune diseases;Allograft
+05332	Human Diseases;Immune diseases;Graft-versus-host
+05340	Human Diseases;Immune diseases;Primary
+05010	Human Diseases;Neurodegenerative diseases;Alzheimer's
+05012	Human Diseases;Neurodegenerative diseases;Parkinson's
+05014	Human Diseases;Neurodegenerative diseases;Amyotrophic
+05016	Human Diseases;Neurodegenerative diseases;Huntington's
+05020	Human Diseases;Neurodegenerative diseases;Prion
+05030	Human Diseases;Substance dependence;Cocaine
+05031	Human Diseases;Substance dependence;Amphetamine
+05032	Human Diseases;Substance dependence;Morphine
+05033	Human Diseases;Substance dependence;Nicotine
+05034	Human Diseases;Substance dependence;Alcoholism
+05418	Human Diseases;Cardiovascular diseases;Fluid
+05410	Human Diseases;Cardiovascular diseases;Hypertrophic
+05412	Human Diseases;Cardiovascular diseases;Arrhythmogenic
+05414	Human Diseases;Cardiovascular diseases;Dilated
+05416	Human Diseases;Cardiovascular diseases;Viral
+04930	Human Diseases;Endocrine and metabolic diseases;Type
+04940	Human Diseases;Endocrine and metabolic diseases;Type
+04950	Human Diseases;Endocrine and metabolic diseases;Maturity
+04932	Human Diseases;Endocrine and metabolic diseases;Non-alcoholic
+04931	Human Diseases;Endocrine and metabolic diseases;Insulin
+04933	Human Diseases;Endocrine and metabolic diseases;AGE-RAGE
+04934	Human Diseases;Endocrine and metabolic diseases;Cushing's
+05110	Human Diseases;Infectious diseases: Bacterial;Vibrio
+05120	Human Diseases;Infectious diseases: Bacterial;Epithelial
+05130	Human Diseases;Infectious diseases: Bacterial;Pathogenic
+05132	Human Diseases;Infectious diseases: Bacterial;Salmonella
+05131	Human Diseases;Infectious diseases: Bacterial;Shigellosis
+05133	Human Diseases;Infectious diseases: Bacterial;Pertussis
+05134	Human Diseases;Infectious diseases: Bacterial;Legionellosis
+05150	Human Diseases;Infectious diseases: Bacterial;Staphylococcus
+05152	Human Diseases;Infectious diseases: Bacterial;Tuberculosis
+05100	Human Diseases;Infectious diseases: Bacterial;Bacterial
+05166	Human Diseases;Infectious diseases: Viral;HTLV-I
+05162	Human Diseases;Infectious diseases: Viral;Measles
+05164	Human Diseases;Infectious diseases: Viral;Influenza
+05161	Human Diseases;Infectious diseases: Viral;Hepatitis
+05160	Human Diseases;Infectious diseases: Viral;Hepatitis
+05168	Human Diseases;Infectious diseases: Viral;Herpes
+05167	Human Diseases;Infectious diseases: Viral;Kaposi's
+05169	Human Diseases;Infectious diseases: Viral;Epstein-Barr
+05165	Human Diseases;Infectious diseases: Viral;Human
+05146	Human Diseases;Infectious diseases: Parasitic;Amoebiasis
+05144	Human Diseases;Infectious diseases: Parasitic;Malaria
+05145	Human Diseases;Infectious diseases: Parasitic;Toxoplasmosis
+05140	Human Diseases;Infectious diseases: Parasitic;Leishmaniasis
+05142	Human Diseases;Infectious diseases: Parasitic;Chagas
+05143	Human Diseases;Infectious diseases: Parasitic;African
+01501	Human Diseases;Drug resistance: Antimicrobial;beta-Lactam
+01502	Human Diseases;Drug resistance: Antimicrobial;Vancomycin
+01503	Human Diseases;Drug resistance: Antimicrobial;Cationic
+01521	Human Diseases;Drug resistance: Antineoplastic;EGFR
+01524	Human Diseases;Drug resistance: Antineoplastic;Platinum
+01523	Human Diseases;Drug resistance: Antineoplastic;Antifolate
+01522	Human Diseases;Drug resistance: Antineoplastic;Endocrine
+07011	Drug Development;Chronology: Antiinfectives;Penicillins
+07012	Drug Development;Chronology: Antiinfectives;Cephalosporins
+07013	Drug Development;Chronology: Antiinfectives;Cephalosporins
+07021	Drug Development;Chronology: Antiinfectives;Aminoglycosides
+07019	Drug Development;Chronology: Antiinfectives;Tetracyclines
+07020	Drug Development;Chronology: Antiinfectives;Macrolides
+07014	Drug Development;Chronology: Antiinfectives;Quinolones
+07023	Drug Development;Chronology: Antiinfectives;Rifamycins
+07026	Drug Development;Chronology: Antiinfectives;Antifungal
+07044	Drug Development;Chronology: Antiinfectives;Antiviral
+07053	Drug Development;Chronology: Antiinfectives;Anti-HIV
+07040	Drug Development;Chronology: Antineoplastics;Antineoplastics
+07041	Drug Development;Chronology: Antineoplastics;Antineoplastics
+07042	Drug Development;Chronology: Antineoplastics;Antineoplastics
+07043	Drug Development;Chronology: Antineoplastics;Antineoplastics
+07045	Drug Development;Chronology: Antineoplastics;Antineoplastics
+07032	Drug Development;Chronology: Nervous system agents;Hypnotics
+07030	Drug Development;Chronology: Nervous system agents;Anxiolytics
+07033	Drug Development;Chronology: Nervous system agents;Anticonvulsants
+07015	Drug Development;Chronology: Nervous system agents;Local
+07039	Drug Development;Chronology: Nervous system agents;Opioid
+07028	Drug Development;Chronology: Nervous system agents;Antipsychotics
+07029	Drug Development;Chronology: Nervous system agents;Antipsychotics
+07031	Drug Development;Chronology: Nervous system agents;Antipsychotics
+07027	Drug Development;Chronology: Nervous system agents;Antidepressants
+07056	Drug Development;Chronology: Nervous system agents;Agents
+07057	Drug Development;Chronology: Nervous system agents;Antiparkinsonian
+07055	Drug Development;Chronology: Other drugs;Sulfonamide
+07016	Drug Development;Chronology: Other drugs;Sulfonamide
+07017	Drug Development;Chronology: Other drugs;Sulfonamide
+07018	Drug Development;Chronology: Other drugs;Sulfonamide
+07037	Drug Development;Chronology: Other drugs;Antiarrhythmic
+07038	Drug Development;Chronology: Other drugs;Antiulcer
+07046	Drug Development;Chronology: Other drugs;Immunosuppressive
+07047	Drug Development;Chronology: Other drugs;Osteoporosis
+07048	Drug Development;Chronology: Other drugs;Antimigraines
+07049	Drug Development;Chronology: Other drugs;Antithrombosis
+07050	Drug Development;Chronology: Other drugs;Antirheumatics
+07051	Drug Development;Chronology: Other drugs;Antidiabetics
+07052	Drug Development;Chronology: Other drugs;Antidyslipidemic
+07054	Drug Development;Chronology: Other drugs;Antiglaucoma
+07220	Drug Development;Target-based classification: G protein-coupled receptors;Cholinergic
+07215	Drug Development;Target-based classification: G protein-coupled receptors;alpha-Adrenergic
+07214	Drug Development;Target-based classification: G protein-coupled receptors;beta-Adrenergic
+07213	Drug Development;Target-based classification: G protein-coupled receptors;Dopamine
+07212	Drug Development;Target-based classification: G protein-coupled receptors;Histamine
+07227	Drug Development;Target-based classification: G protein-coupled receptors;Histamine
+07211	Drug Development;Target-based classification: G protein-coupled receptors;Serotonin
+07228	Drug Development;Target-based classification: G protein-coupled receptors;Eicosanoid
+07224	Drug Development;Target-based classification: G protein-coupled receptors;Opioid
+07229	Drug Development;Target-based classification: G protein-coupled receptors;Angiotensin
+07225	Drug Development;Target-based classification: Nuclear receptors;Glucocorticoid
+07226	Drug Development;Target-based classification: Nuclear receptors;Progesterone,
+07223	Drug Development;Target-based classification: Nuclear receptors;Retinoic
+07222	Drug Development;Target-based classification: Nuclear receptors;Peroxisome
+07221	Drug Development;Target-based classification: Ion channels;Nicotinic
+07230	Drug Development;Target-based classification: Ion channels;GABA-A
+07036	Drug Development;Target-based classification: Ion channels;Calcium
+07231	Drug Development;Target-based classification: Ion channels;Sodium
+07232	Drug Development;Target-based classification: Ion channels;Potassium
+07235	Drug Development;Target-based classification: Ion channels;N-Metyl-D-aspartic
+07233	Drug Development;Target-based classification: Transporters;Ion
+07234	Drug Development;Target-based classification: Transporters;Neurotransmitter
+07216	Drug Development;Target-based classification: Enzymes;Catecholamine
+07219	Drug Development;Target-based classification: Enzymes;Cyclooxygenase
+07024	Drug Development;Target-based classification: Enzymes;HMG-CoA
+07217	Drug Development;Target-based classification: Enzymes;Renin-angiotensin
+07218	Drug Development;Target-based classification: Enzymes;HIV
+07025	Drug Development;Structure-based classification;Quinolines
+07034	Drug Development;Structure-based classification;Eicosanoids
+07035	Drug Development;Structure-based classification;Prostaglandins
+07110	Drug Development;Skeleton-based classification;Benzoic
+07112	Drug Development;Skeleton-based classification;1,2-Diphenyl
+07114	Drug Development;Skeleton-based classification;Naphthalene
+07117	Drug Development;Skeleton-based classification;Benzodiazepine

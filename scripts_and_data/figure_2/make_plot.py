@@ -168,6 +168,7 @@ def draw_contig_pca(finalDf, var, samples, c):
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
 
 
+
 def draw_violins(data, ax, c):
 	c.append(c[0])
 	samples=["2014", "2015", "2016", "2017"]
@@ -187,7 +188,8 @@ def draw_violins(data, ax, c):
 				df["y"].append(-1)
 			df["z"].append("before")
 			df["z"].append("after")
-		sns.violinplot(x="x", y='y', data=df, width=1, linewidth=1, ax=ax, split=True, hue="z", palette=[c[s], c[s+1]])
+		sns.violinplot(x="x", y='y', data=df, width=1, linewidth=1.5, ax=ax, split=True, hue="z", palette=["white", "white"])
+		#sns.violinplot(x="x", y='y', data=df, width=1, linewidth=1, ax=ax, split=True, hue="z", palette=[c[s], c[s+1]])
 
 	ax.set_xticklabels(["2014>2015", "2015>2016", "2016>2017", "2017>2014"])
 	for tick in ax.get_xticklabels(): tick.set_rotation(20)
@@ -198,6 +200,10 @@ def draw_violins(data, ax, c):
 	ax.set_title("Taxonomic rearrangement", fontsize=title_font)
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
+	plt.setp(ax.artists, edgecolor = 'k', facecolor='w')
+	plt.setp(ax.lines, color='k')
+
+
 
 
 def draw_signifficance_bars(df, ax):
@@ -232,7 +238,6 @@ def draw_signifficance_bars(df, ax):
 font = {'family': 'arial', 'weight': 'normal', 'size': 12}
 plt.rc('font', **font)
 
-sns.set_palette("colorblind")
 plt.rc('font', family='arial')
 sns.set_palette("colorblind")
 #sns.set_style("dark")
@@ -291,6 +296,7 @@ ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=Tru
 
 #plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
 plt.savefig("figure_2.png", dpi=300)
+plt.savefig("figure_2.eps", dpi=300)
 plt.grid()
 #plt.show()
 

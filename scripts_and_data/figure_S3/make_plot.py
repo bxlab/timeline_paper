@@ -169,6 +169,7 @@ ax.set_ylabel("Relative taxa abundance (%)")
 
 plt.tight_layout(rect=[-0.02, -0.0, 1, 1], w_pad=-0.5)
 plt.savefig("figure_S3.png", dpi=300)
+plt.savefig("figure_S3.eps", dpi=300)
 #plt.show()
 
 

@@ -69,6 +69,8 @@ fig = plt.figure(figsize=(10, 3), dpi=300)
 colors=["gold", "cyan", "royalblue", "magenta"]
 title_font=40
 
+ax = fig.add_axes([0, 0, 1, 1])
+
 # xmin, ymin, dx, dy
 print "adding making kronagram figures..."
 years=["2014", "2015", "2016", "2017"]
@@ -81,5 +83,6 @@ for i,year in enumerate(years):
 add_labels(labels)
 
 #plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)
-plt.savefig("figure_S2.png")
+plt.savefig("figure_S2.png", dpi=300)
+plt.savefig("figure_S2.eps", dpi=300)
 #plt.show()
