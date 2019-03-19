@@ -1,304 +1,420 @@
 #!/usr/bin/env python
-print "loading python packages..."
-import sys, getopt, os
-import pandas as pd
-import scipy.stats as stats
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-from matplotlib.patches import Patch
-from matplotlib.cbook import get_sample_data
-import seaborn as sns
-sns.set_color_codes()
-import operator as op
+import sys, os
 import numpy as np
-import math
-from PIL import Image
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
-from matplotlib.colors import LogNorm
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import operator
+from scipy import stats
+if len(sys.argv)<2: sys.argv.append("cellular")
 
 
-#standardize each sample to number of reads in each sample (to 10000 reads per sample)
-def standardize_otu_table(df, reads):
-	df/=df.sum()
-	df*=reads
-	return df
-
-# group OTUs by taxonomy
-def group_otus_by_taxa(df, rank, taxonomy):
-	taxonomy_rank=int(rank)
-	taxa_otus={}
-	for otu in taxonomy.index.values:
-	        if len(taxonomy[otu].split(";"))<taxonomy_rank+1:
-	                taxa = "Unknown"
-	        else:
-	                taxa = taxonomy[otu].split(";")[taxonomy_rank].strip().split("_")[-1]
-	        if taxa not in taxa_otus: taxa_otus[taxa]=[]
-	        taxa_otus[taxa].append(otu)
-
-	for taxa in taxa_otus:
-	        for otu in taxa_otus[taxa]:
-	                #rename the index in otu table to taxa
-	                df=df.rename(index={otu: taxa})
-	#collapse rows with same taxonomy
-	df=df.groupby(df.index).sum()
-	return df
-
-
-def load_taxa_data(df, taxa):
-	timeline={}
-        for sample in df.columns.values:
-                year=sample.split("-")[2]+'-'+sample.split("-")[3][:2]
-                if year not in timeline: timeline[year]=[]
-                timeline[year].append(df.at[taxa, sample])
-	return timeline
-
-
-def load_otu_data(inputfile, rank_of_interest):
-	df=pd.read_csv(inputfile, sep='\t', header=1, index_col=0)
-	taxonomy=df["taxonomy"]
-	df = df.drop("taxonomy", 1)
+def average_iep_statistics(data, labels):
+	for i,s1 in enumerate(labels):
+		for j,s2 in enumerate(labels):
+			if s1==s2: continue
+			if int(s1)>int(s2): continue
+			test=stats.ttest_ind(data[i], data[j])	
+			print s1, s2, test
 	
-	df = standardize_otu_table(df, 100)
-	df = group_otus_by_taxa(df, rank_of_interest, taxonomy)
-	return df
-	
-def calculate_pca(df):
-	samples=list(df.index.values)
-
-	pca = PCA(n_components=2)
-	principalComponents = pca.fit_transform(df)
-	principalDf = pd.DataFrame(data = principalComponents, columns = ['component_1', 'component_2'])
-
-	df = df.reset_index()
-	finalDf = pd.concat([principalDf, df[["index"]]], axis = 1)
-	finalDf["component_1"]/=1000
-	finalDf["component_2"]/=1000
-	var = pca.explained_variance_ratio_
-	return finalDf, var, samples
-
-def contig_correlation_statistics(data):
-	comparisons={}
+def iep_distribution_statistics(data):
+	print "Kolmogorov-Smirnov statistics:"
 	for s1 in sorted(data):
 		for s2 in sorted(data):
-			if s1.split("-")[1] == s2.split("-")[1]: continue
-			if int(s1.split("-")[1]) > int(s2.split("-")[1]): continue
-			values1 = data[s1].tolist()
-			values2 = data[s2].tolist()
-			test = stats.pearsonr(values1, values2)
-			comparison = s1.split("-")[1]+"-"+s2.split("-")[1]
-			if comparison not in comparisons: comparisons[comparison]=[]
-			comparisons[comparison].append(test[0])
-	print "\t".join(["comparison 1", "comparison 2", "t-statistic", "p-value"])
-	for i in sorted(comparisons):
-		for j in sorted(comparisons):
-			if i==j: continue
-			if int(i.split("-")[0])>int(j.split("-")[0]): continue
-			test = stats.ttest_ind(comparisons[i], comparisons[j])
-			print "\t".join([i,j,str(test[0]), str(test[1])])
+			if s1==s2: continue
+			if int(s1.split("-")[1])>int(s2.split("-")[1]): continue
+			if int(s1.split("_")[0].split("-")[3])>int(s2.split("_")[0].split("-")[3]): continue
+			d1=[]; d2=[]
+			for tup in data[s1]:
+				iep=tup[0]
+				abund=int(tup[1])
+				for a in range(abund):
+					d1.append(iep)
+			for tup in data[s2]:
+				iep=tup[0]
+				abund=int(tup[1])
+				for a in range(abund):
+					d2.append(iep)
+			
+			test=stats.ks_2samp(d1, d2)
+			print s1, s2, test
 
 
-def convert_wideform_to_longform(dictionary):
-	df={"x":[], "y":[]}
-	for key in sorted(dictionary):
-		for element in dictionary[key]:
-			df["x"].append(key.split("-")[0])
-			df["y"].append(element)
-	return df
+def load_contig_taxonomy(dir):
+	print "loading taxonomy..."
+	taxonomy={}
+	for f in os.listdir(dir):
+		sample=f.split('.')[0]
+		taxonomy[sample]={}
+		for line in open(dir+"/"+f):
+			cut=line.strip().split("\t")
+			taxonomy[sample]["_".join(cut[0].split("_")[:4])]=cut[1]
+	return taxonomy
 
-def load_and_standardize_rearrangements(filename):
-	values=[]; weights=[]
-	for line in open(filename):
+
+def load_gene_taxonomy(contig_taxonomy, dir):
+	print "loading gene taxonomy..."
+	taxonomy={}
+	for f in os.listdir(dir):
+		sample=f.split('.')[0]
+		taxonomy[sample]={}
+		for line in open(dir+"/"+f):
+			cut=line.strip().split("\t")
+			contig = cut[0]
+			if contig not in contig_taxonomy[sample]: continue
+			taxa = contig_taxonomy[sample][contig]
+			gene = cut[8].split(";")[0].split("=")[1]
+			taxonomy[sample][gene] = taxa
+	return taxonomy
+
+
+def load_contig_depths(dir):
+	print "loading gene depths..."
+	depths={}
+	for f in os.listdir(dir):
+		sample=f.split('.')[0]
+		depths[sample]={}
+		for line in open(dir+"/"+f):
+			cut=line.strip().split("\t")
+			contig = "_".join(cut[2].split("_")[:4])
+			if int(contig.split("_")[3])<500: continue
+			depths[sample][cut[0]] = float(cut[1])
+	return depths
+
+
+def load_gene_ieps(dir, depths, taxonomy):
+	print "loading IEP data..."
+	ieps={}
+	for f in os.listdir(dir):
+		sample=f.split('.')[0]
+		year=sample.split("-")[1]
+		ieps[sample]=[]
+		
+		for line in open(dir+"/"+f):
+			cut=line.strip().split("\t")
+			if len(cut)<5 or cut[0]=="Pro_id": continue
+			iep=float(cut[-1])
+			gene=cut[0]
+			if gene not in depths[sample]: continue
+			depth = depths[sample][gene]
+			if gene in taxonomy[sample]:
+				taxa = taxonomy[sample][gene]
+			else:
+				taxa="cellular"
+			ieps[sample].append( (iep, depth, taxa) )
+	return ieps
+
+
+def load_co_taxonomy(tax_file):
+	print "\nloading co-assembly contig taxonomy..."
+	taxonomy={}
+	for line in open(tax_file):
+		cut=line.strip().split("\t")
+		taxonomy[cut[0]]=cut[1]
+	return taxonomy
+
+
+def load_co_depths(file_name):
+	print "loading co-assembly contig depths..."
+	depths=np.loadtxt(open(file_name), delimiter="\t", skiprows=0, usecols=range(1,21))
+	samples={}
+	contigs={}
+	for i, line in enumerate(open(file_name)):
+		cut=line.strip().split("\t")
+		if i==0:
+			header=cut
+			for i in range(len(header)):
+				if header[i][0]=="#": continue
+				samples[header[i]]=i-1
+		else:
+			contigs[cut[0]]=i-1
+
+	# using this format: depths[contigs[contig]][samples[sample]
+	return depths, samples, contigs
+
+
+def select_contigs_by_taxonomy(contigs, taxonomy, taxa):
+	contigs_out={}
+	for contig in taxonomy:
+		if taxa not in taxonomy[contig]: continue
+		if contig not in contigs: continue
+		contigs_out[contig]=contigs[contig]
+	return contigs_out
+	
+
+def get_trk_abundance(annotation_file, depths, samples, contigs):
+	print "pulling out Trk abundances..."
+	trk_out={}
+	depth_totals={}
+	for sample in samples:
+		trk_out[sample]=0
+		depth_totals[sample]=0
+	for line in open(annotation_file):
 		if line[0]=="#": continue
 		cut=line.strip().split("\t")
-		weights.append(float(cut[0]))
-		values.append(float(cut[1]))
-	maximum=max(weights)
-	out = []
-	for i, val in enumerate(values):
-		weight = int(100*weights[i]/maximum)
-		for j in range(weight):
-			out.append(val)
-	return out, values
-
-def draw_matrix_clustermap(filename, ax, c):
-	folder = os.path.dirname(os.path.realpath(__file__))
-	im = plt.imread(get_sample_data(folder + "/" + filename))
-	ax.imshow(im)
-	ax.xaxis.set_visible(False)
-	ax.set_yticklabels([])
-	for spine in ax.spines.values(): spine.set_visible(False)
-	ax.yaxis.set_ticks_position('none') 
-	ax.set_title("Unweighted dissimilarity clustering", fontsize=title_font)
-	ax.yaxis.labelpad = 0
-	ax.set_ylabel("16S rDNA samples", labelpad=-10)
+		contig=cut[0].split("-")[0]
+		if contig not in contigs: continue
+		for sample in samples:
+			depth=depths[contigs[contig]][samples[sample]]
+			depth_totals[sample] += depth
+			if "potassium uptake protein" in cut[2]:
+				trk_out[sample] += depth
+	for sample in samples:
+		trk_out[sample] = 1000 * trk_out[sample] / depth_totals[sample]
+	return trk_out
 
 
-def draw_bin_clustermap(filename, ax, c):
-	folder = os.path.dirname(os.path.realpath(__file__))
-	im = plt.imread(get_sample_data(folder + "/" + filename))
-	ax.imshow(im)
-	ax.xaxis.set_visible(False)
-	ax.set_yticklabels([])
-	for spine in ax.spines.values(): spine.set_visible(False)
-	ax.yaxis.set_ticks_position('none')
-	ax.set_title("MAG abundance clustering", fontsize=title_font)
-	ax.set_ylabel("Metagenome-assembled genomes", labelpad=-0)
+def get_iep_distribution(ieps):
+	print "placing IEPs into distribution lists..."
+	isoelectric_point_bins = {}
+	for sample in ieps:
+		isoelectric_point_bins[sample]=[]
+		for i in np.arange(0.0, 14, 0.2):
+			isoelectric_point_bins[sample].append(0)
+		for tup in ieps[sample]:
+			iep = tup[0]
+			depth = tup[1]
+			iep_bin = int(5*iep)
+			isoelectric_point_bins[sample][iep_bin]+=depth
+	return isoelectric_point_bins
 
 
-def draw_contig_pca(finalDf, var, samples, c):
-	ax.set_title("PCA of contig abundance", fontsize=title_font)
-	ax.set_xlabel('PC1 (variance explained = '+ str(var[0]*100)[:4]+"%")
-	ax.set_ylabel('PC2 (variance explained = '+ str(var[1]*100)[:4]+"%")
-	ax.grid()
+def group_distributions(iep_dists):
+	print "combining IEP distribution lists..."
+	summ={}
+	for sample in iep_dists:
+		new=sample.split("-")[1]
+		if new not in summ:
+			summ[new]=iep_dists[sample]
+		else:
+			summ[new]=map(operator.add, summ[new], iep_dists[sample])
+	return summ
 
-	colors={}; i=0
-	for sample in sorted(samples):
-		label = "-".join(sample.split("-")[1:2])
-		if label not in colors:
-			colors[label]=c[i]
-			i+=1
-	for i in finalDf.index:
-		x = finalDf["component_1"][i]
-		y = finalDf["component_2"][i]
-		sample = "-".join(finalDf["index"][i].split("-")[1:2])
-		color=colors[sample]
-		ax.scatter(x, y, c=color, s=50, edgecolors='k', marker="o", linewidth=0.5)
+
+def merge_distributions(iep_dists):
+	print "combining IEP distribution lists..."
+	merge=[]
+	for sample in iep_dists:
+		if merge==[]:
+			merge = iep_dists[sample]
+		else:
+			merge = map(operator.add, merge, iep_dists[sample])
+	return merge
+
+
+def standardize_distributions(iep_dists):
+	print "standardizing IEP distributions..."
+	std_out={}
+	for sample in iep_dists:
+		std_out[sample]=[]
+		tot=np.sum(iep_dists[sample])
+		for i in range(len(iep_dists[sample])):
+			std_out[sample].append(100*iep_dists[sample][i]/tot)
+	return std_out
+
+
+def subset_by_taxa(ieps, taxa):
+	print "filtering for "+taxa+" genes..."
+	subset={}
+	for sample in ieps:
+		subset[sample]=[]
+		for tup in ieps[sample]:
+			if taxa in tup[2]:
+				subset[sample].append(tup)
+	return subset
+
+
+def weighted_average_iep(list_of_tuples):
+	total=0
+	weights=0
+	for tup in list_of_tuples:
+		total += tup[0]*tup[1]
+		weights += tup[1]
+	return total/weights
+
+
+def draw_dist(data, ax, colors):
+	print "plotting pI curve..."
+	for sample in sorted(data):
+		if "2014" in sample: c=colors[0]
+		elif "2015" in sample: c=colors[1]
+		elif "2016" in sample: c=colors[2]
+		elif "2017" in sample: c=colors[3]
+		elif "Bact" in sample: c="red"
+		elif "Halo" in sample: c="blue"
+		else: c="green"
+		if sample.split("_")[0].split("-")[-1]=='1' or sample.startswith("201") or "SG" not in sample:
+			ax.plot(np.arange(0.0, 14, 0.2), data[sample], linewidth=2, color=c, label=sample)
+		else:
+			ax.plot(np.arange(0.0, 14, 0.2), data[sample], linewidth=2, color=c)
+	ax.legend()
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
+	ax.set_xlim(3,13)
 
 
-
-def draw_violins(data, ax, c):
-	c.append(c[0])
-	samples=["2014", "2015", "2016", "2017"]
-	for s, sample in enumerate(samples):
-		df={"x":[], "y":[], "z":[]}
-		for i in range(len(data["x"])):
-			if data["x"][i]==sample:
-				df["z"].append("before")
-				df["z"].append("after")
-				for j in range(2):
-					df["x"].append(data["x"][i])
-					df["y"].append(data["y"][i])
-		for excluded in samples:
-			if excluded==sample: continue
-			for j in range(2):
-				df["x"].append(excluded)
-				df["y"].append(-1)
-			df["z"].append("before")
-			df["z"].append("after")
-		sns.violinplot(x="x", y='y', data=df, width=1, linewidth=1.5, ax=ax, split=True, hue="z", palette=["white", "white"])
-		#sns.violinplot(x="x", y='y', data=df, width=1, linewidth=1, ax=ax, split=True, hue="z", palette=[c[s], c[s+1]])
-
-	ax.set_xticklabels(["2014>2015", "2015>2016", "2016>2017", "2017>2014"])
-	for tick in ax.get_xticklabels(): tick.set_rotation(20)
-	ax.set_ylabel("Average rearrangement index")
-	ax.set_ylim(0, 1.05)
-	ax.set_xlim(-0.7, 3.7)
-	ax.legend_.remove()
-	ax.set_title("Taxonomic rearrangement", fontsize=title_font)
-	for spine in ax.spines.values(): spine.set_alpha(0.2)
+def draw_iep_boxplot(ieps, ax, c):
+	df={"x":[], "y":[]}
+	dict_data={}
+	for sample in ieps:
+		iep = weighted_average_iep(ieps[sample])
+		year = sample.split("-")[1]
+		date = "-".join(sample.split("-")[1:3])
+		df["x"].append(year)
+		df["y"].append(iep)
+		if date not in dict_data: dict_data[date]=[]
+		dict_data[date].append(iep)
+	sns.boxplot(x="x", y='y', data=df, width=0.5, linewidth=1, ax=ax, palette=c)
+	sns.swarmplot(x="x", y='y', data=df, size=5, edgecolor="black", linewidth=0.5, ax=ax, palette=c)
+	draw_signifficance_bars(dict_data, ax, 0.6)
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
-	plt.setp(ax.artists, edgecolor = 'k', facecolor='w')
-	plt.setp(ax.lines, color='k')
+	for spine in ax.spines.values(): spine.set_alpha(0.2)
 
 
+def draw_trk_boxplot(trk_dict, ax, c):
+	df={"x":[], "y":[]}
+	dict_data={}
+	for sample in trk_dict:
+		val = trk_dict[sample]
+		year = sample.split("-")[1]
+		date = "-".join(sample.split("-")[1:3])
+		df["x"].append(year)
+		df["y"].append(val)
+		if date not in dict_data: dict_data[date]=[]
+		dict_data[date].append(val)
+	sns.boxplot(x="x", y='y', data=df, width=0.5, linewidth=1, ax=ax, palette=c)
+	sns.swarmplot(x="x", y='y', data=df, size=5, edgecolor="black", linewidth=0.5, ax=ax, palette=c)
+	draw_signifficance_bars(dict_data, ax, 0.6)
+	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
+	for spine in ax.spines.values(): spine.set_alpha(0.2)
 
 
-def draw_signifficance_bars(df, ax):
-	h=96
-	for s1 in sorted(data):
-		for s2 in sorted(data, reverse=True):
-			if s1==s2: continue
-			if int(s1.split("-")[0])>int(s2.split("-")[0]): continue
-			test=stats.ks_2samp(data[s1], data[s2])
+def get_max_min_in_dict(dictionary):
+        maxs=[]; mins=[]
+        for key in dictionary:
+                maxs.append(max(dictionary[key]))
+                mins.append(min(dictionary[key]))
+        return max(maxs), min(mins)
+
+
+def draw_signifficance_bars(df, ax, inc_mod=1):
+	max_val,min_val = get_max_min_in_dict(df)
+	h = (max_val-min_val)*1.1 + min_val
+	inc = (h-min_val)*0.05*inc_mod
+
+	for x_st,s1 in enumerate(sorted(df)):
+		for x_fi,s2 in enumerate(sorted(df)):
+			s1_tot=float(s1.split("-")[0]) + float(s1.split("-")[0])/10
+			s2_tot=float(s2.split("-")[0]) + float(s2.split("-")[0])/10
+			if s1>=s2: continue
+			test=stats.ttest_ind(df[s1], df[s2])
 			if test.pvalue > 0.01: continue
 			elif test.pvalue > 0.001: m='*'
 			elif test.pvalue > 0.0001: m='**'
 			else: m='***'
-
-			print s1, s2, m, test
-			x_st = int(s1.split("-")[0])-2014
-			x_fi = int(s2.split("-")[0])-2014
 			ax.hlines(y=h, xmin=x_st, xmax=x_fi, linewidth=1, color='k')
-			ax.vlines(x=x_st, ymin=h-1, ymax=h, linewidth=1, color='k')
-			ax.vlines(x=x_fi, ymin=h-1, ymax=h, linewidth=1, color='k')
-			ax.text(0.95*(x_fi+x_st)/2.0, h-0.5, m)
-			h+=2.5
-
-	ax.text(-0.2, 45, "P-value:\n*   0.01\n**  0.001\n*** 0.0001", fontsize=12)
+			ax.text((x_fi+x_st)/2.0, h-inc/3, m, ha='center', fontsize=10)
+			h+=inc
 
 
 
-##################   START SCRIPT     ######################
-
+# START MAIN SCRIPT
 
 # main figure layout:
-font = {'family': 'arial', 'weight': 'normal', 'size': 12}
+font = {'family': 'arial', 'weight': 'normal', 'size': 10}
 plt.rc('font', **font)
-
-plt.rc('font', family='arial')
 sns.set_palette("colorblind")
-#sns.set_style("dark")
-fig = plt.figure(figsize=(10, 10))
+fig = plt.figure(figsize=(10, 8))
 colors=["gold", "cyan", "royalblue", "magenta"]
-title_font=16
+title_font=14
 
 
-print "plotting OTU dissimilarity matrix..."
-# xmin, ymin, dx, dy
-ax = fig.add_axes([0.045, 0.51, 0.44, 0.44])
-os.system("python cluster_matrix.py unweighted_unifrac_matrix.tab 4 "+" ".join(colors))
-draw_matrix_clustermap("cluster_matrix.png", ax, colors)
-ax.annotate("A", xy=(-0.08, 1.01), xycoords="axes fraction", fontsize=20)
+# loading individual assembly data
+contig_taxonomy = load_contig_taxonomy("contig_taxonomy")
+gene_depths = load_contig_depths("gene_depths")
+gene_taxonomy = load_gene_taxonomy(contig_taxonomy, "contig_annotation")
+ieps = load_gene_ieps("gene_ieps", gene_depths, gene_taxonomy)
+
+# loading co-assembly data
+co_taxonomy = load_co_taxonomy("co-assembly/contig_taxonomy.tab")
+co_depths, co_samples, co_contigs = load_co_depths("co-assembly/contig_depth.tab")
 
 
-print "making MAG clustermap..."
-ax = fig.add_axes([0.52, 0.49, 0.48, 0.46])
-os.system("python cluster_mags.py bin_abundances.tab 3.9 4 "+" ".join(colors))
-draw_bin_clustermap("cluster_mags.png", ax, colors)
-ax.annotate("B", xy=(-0.1, 1.01), xycoords="axes fraction", fontsize=20)
+print "\nplotting metagenome IEP curves..."
+ax = fig.add_subplot(231)
+iep_dists = get_iep_distribution(ieps)
+joint_dist = group_distributions(iep_dists)
+std_dist = standardize_distributions(joint_dist)
+draw_dist(std_dist, ax, colors)
+ax.set_xlabel("Isoelectric Point (pI)")
+ax.set_ylabel("Relative abundance")
+ax.set_title("pI distribution", fontsize=title_font)
+ax.annotate("A", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
 
 
-print "making contig abundance PCA..."
-ax = fig.add_axes([0.08, 0.12, 0.38, 0.38])
-df = pd.read_csv("contig_abundances.tab", delimiter="\t", index_col="#contig").T
-df=df.div(df.sum(axis=1)*0.000001, axis=0)
-finalDf, var, samples = calculate_pca(df)
-contig_correlation_statistics(df.T)
-draw_contig_pca(finalDf, var, samples, colors)
-ax.annotate("C", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
+print "\nplotting average IEP box plots..."
+ax = fig.add_subplot(232)
+draw_iep_boxplot(ieps, ax, colors)
+ax.set_ylabel("Average isoelectric point")
+ax.set_title("Average pI", fontsize=title_font)
+ax.annotate("B", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
 
 
-print "making rearrangment violin plots"
-ax = fig.add_axes([0.56, 0.12, 0.4, 0.38])
-os.system("python calculate_rearrangements.py 0")
-comparisons=["2014-2015", "2015-2016", "2016-2017", "2017-2014"]
-data={}; raw={}
-for comparison in comparisons:
-	data[comparison], raw[comparison] = load_and_standardize_rearrangements(comparison+".tab")
-df = convert_wideform_to_longform(data)
-draw_violins(df, ax, colors)
-draw_signifficance_bars(raw, ax)
-ax.annotate("D", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
+print "\nplotting total Trk potential..."
+ax = fig.add_subplot(233)
+trk_data = get_trk_abundance("co-assembly/img_annotation.master", co_depths, co_samples, co_contigs)
+draw_trk_boxplot(trk_data, ax, colors)
+ax.set_ylabel("Average Trk abundance")
+ax.set_title("Trk potential", fontsize=title_font)
+ax.annotate("C", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
 
 
-print "making legend..."
-ax = fig.add_axes([0.0, 0.0, 1, 0.05])
-ax.axis("off")
-legend_elements = [Patch(facecolor=colors[0], edgecolor='k', label='2014', linewidth=1),
-        Patch(facecolor=colors[1], edgecolor='k', label='2015', linewidth=1),
-        Patch(facecolor=colors[2], edgecolor='k', label='2016', linewidth=1),
-        Patch(facecolor=colors[3], edgecolor='k', label='2017', linewidth=1)]
-ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=True, facecolor='w', ncol=4, columnspacing=1, handlelength=1, prop={'size': 16})
+print "\nplotting taxa IEP curves..."
+ax = fig.add_subplot(234)
+dist={}
+for i,taxa in enumerate(["Bacteroidetes", "Halobacteria"]):
+	taxa_ieps = subset_by_taxa(ieps, taxa)
+	iep_dists = get_iep_distribution(taxa_ieps)
+	dist[taxa] = merge_distributions(iep_dists)
+	std_dist = standardize_distributions(dist)
+draw_dist(std_dist, ax, colors)
+ax.set_xlabel("Isoelectric Point (pI)")
+ax.set_ylabel("Relative abundance")
+ax.set_title("pI distribution by taxa", fontsize=title_font)
+ax.annotate("D", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
 
 
-#plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
-plt.savefig("figure_2.png", dpi=600)
-plt.savefig("figure_2.eps", dpi=600)
-plt.grid()
-#plt.show()
+print "\nplotting average IEP box plots for Halobacteria..."
+ax = fig.add_subplot(235)
+taxa_ieps = subset_by_taxa(ieps, "Halobacteria")
+draw_iep_boxplot(taxa_ieps, ax, colors)
+ax.set_ylabel("Average isoelectric point")
+ax.set_title("Average pI in Halobacteria", fontsize=title_font)
+ax.annotate("E", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
+
+
+print "\nplotting total Trk potential of Halobacteria..."
+ax = fig.add_subplot(236)
+halo_contigs = select_contigs_by_taxonomy(co_contigs, co_taxonomy, "Halobacteria")
+trk_data = get_trk_abundance("co-assembly/img_annotation.master", co_depths, co_samples, halo_contigs)
+draw_trk_boxplot(trk_data, ax, colors)
+ax.set_ylabel("Average Trk abundance")
+ax.set_title("Trk potential in Halobacteria", fontsize=title_font)
+ax.annotate("F", xy=(-0.08, 1.02), xycoords="axes fraction", fontsize=title_font)
+
+
+plt.tight_layout(w_pad=-0)
+plt.savefig("figure_3.png", dpi=600)
+#plt.savefig("figure_3.eps", dpi=600)
+
+
+
+
+
+
+
+
+
 
 
 

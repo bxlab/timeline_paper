@@ -1,411 +1,304 @@
 #!/usr/bin/env python
-import sys
-import numpy as np
+print "loading python packages..."
+import sys, getopt, os
+import pandas as pd
+import scipy.stats as stats
 import matplotlib.pyplot as plt
-from numpy import random
-from shapely.geometry.polygon import LinearRing, Polygon
-from descartes import PolygonPatch
-from scipy.interpolate import spline
-
-def generate_cells(n_species, n_functions, silent=False):
-	if silent==False:
-		print "generating community..."
-	out=[]
-	for sp in range(n_species):
-		n = random.randint(2, 4)
-		functions=[]
-		while len(functions)<n:
-			f = random.randint(n_functions)
-			if f in functions: continue
-			functions.append(f)
-		out.append(functions)
-	all_f=[]
-	for sp in out:
-		all_f += sp
-	for f in range(1, n_functions):
-		if f not in all_f:
-			out = generate_cells(n_species, n_functions, silent=True)
-			break
-	return out
+import matplotlib.gridspec as gridspec
+from matplotlib.patches import Patch
+from matplotlib.cbook import get_sample_data
+import seaborn as sns
+sns.set_color_codes()
+import operator as op
+import numpy as np
+import math
+from PIL import Image
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from matplotlib.colors import LogNorm
 
 
-def fill_gaps(organisms, n_functions, silent=False):
-	if silent==False:
-		print "adding species to make sure each function is represented..."
-	merge=[]
-	for o in organisms:
-		merge+=o
-	missing=[]
-	for n in range(n_functions):
-		if n not in merge:
-			missing.append(n)
-	if len(missing)==1:
-		missing.append(random.randint(n_functions))
-	if missing!=[]:
-		organisms.append(missing)
-	return organisms
+#standardize each sample to number of reads in each sample (to 10000 reads per sample)
+def standardize_otu_table(df, reads):
+	df/=df.sum()
+	df*=reads
+	return df
+
+# group OTUs by taxonomy
+def group_otus_by_taxa(df, rank, taxonomy):
+	taxonomy_rank=int(rank)
+	taxa_otus={}
+	for otu in taxonomy.index.values:
+	        if len(taxonomy[otu].split(";"))<taxonomy_rank+1:
+	                taxa = "Unknown"
+	        else:
+	                taxa = taxonomy[otu].split(";")[taxonomy_rank].strip().split("_")[-1]
+	        if taxa not in taxa_otus: taxa_otus[taxa]=[]
+	        taxa_otus[taxa].append(otu)
+
+	for taxa in taxa_otus:
+	        for otu in taxa_otus[taxa]:
+	                #rename the index in otu table to taxa
+	                df=df.rename(index={otu: taxa})
+	#collapse rows with same taxonomy
+	df=df.groupby(df.index).sum()
+	return df
 
 
-def generate_abundances(n, silent=False):
-	if silent==False:
-		print "generating abundances..."
-	out=[]; a=1
-	for i in range(n):
-		#out.append(random.randint(1, max_abund))
-		out.append(a)
-		a+=1
-	out.sort()
-	return out
+def load_taxa_data(df, taxa):
+	timeline={}
+        for sample in df.columns.values:
+                year=sample.split("-")[2]+'-'+sample.split("-")[3][:2]
+                if year not in timeline: timeline[year]=[]
+                timeline[year].append(df.at[taxa, sample])
+	return timeline
 
 
-def generate_colors(n, new=False):
-	print "generating colors..."
-	if new==False:
-		colors = ["firebrick", "purple", "red", "teal", "magenta", "blue", "seagreen", "salmon", "grey", "teal", "deeppink"]
-	else:
-		colors = ["crimson","slateblue","orchid","y","steelblue","olive","brown","orange","olive","plum","wheat"]
-	return colors[:n]
-
-
-def modify_spines(ax):
-	opacity=0.5
-	ax.spines['left'].set_alpha(0)
-	ax.spines['right'].set_alpha(0)
-	ax.spines['top'].set_alpha(0)
-	ax.spines['bottom'].set_alpha(opacity)
-
-
-def draw_dots(ax, orig_organisms, orig_abundances, orig_colors, n, position):
-	if position!="bot_right":
-		organisms = [range(n)] + orig_organisms
-		abundances = [1] + orig_abundances
-		colors = ["k"] + orig_colors
-		ax.set_ylim(0, sum(abundances)+2)
-	if position=="bot_right":
-		organisms = orig_organisms + [range(n)]
-		abundances = orig_abundances + [1]
-		colors = orig_colors + ["k"]
-		ax.set_ylim(0, sum(abundances)+2)
-
-	totals=[]
-	for i in range(n): totals.append(0)
-
-	draw_boxes(ax, abundances, colors, n, position)
-	print "drawing 'dot' plot of community..."
-	y_coord=[]
-	y=1
-	for i,org in enumerate(organisms):
-		st=y
-		x_list=[];y_list=[]
-		for n in range(abundances[i]):
-			for x in org:
-				x_list.append(x)
-				y_list.append(y)
-				totals[x]+=1
-			y+=1
-		fi=y
-		#ax.scatter(x_list, y_list, c=colors[i], linewidth=0.5, edgecolors='k', alpha=1, zorder=10)
-		width=0.5
-		for x in org:
-			coordinates=[ (x-0.5,st-0.5), (x+0.5,st-0.5), (x+0.5,fi-0.5), (x-0.5,fi-0.5) ]
-			trap = Polygon(coordinates)
-			patch = PolygonPatch(trap, facecolor=colors[i], linewidth=0.5, alpha=1, zorder=1, edgecolor="white")
-			ax.add_patch(patch)
-		if i!=0:
-			y_coord.append([st, fi])
-	#for xmaj in range(len(abundances)+1): ax.axvline(x=xmaj-0.5, ls='--', linewidth=1, alpha=0.1, c="k")
-	ax.get_xaxis().set_ticks([])
-	ax.get_yaxis().set_ticks([])
-	ax.set_xlabel("Community functions", fontsize=12)
-	ax.set_xlim([-1, n_functions])
-	modify_spines(ax)
-	return y_coord, totals
-
-
-def draw_boxes(ax, abundances, colors, n, position):
-	print "drawing background boxes and labels..."
-	bot=0.5
-	for i, abund in enumerate(abundances):
-		top=bot+abund
-		coordinates=[ (-1,top), (n,top), (n,bot), (-1,bot) ]
-		trap = Polygon(coordinates)
-		patch = PolygonPatch(trap, facecolor=colors[i], linewidth=1, edgecolor="white", alpha=0.5, zorder=1)
-		ax.add_patch(patch)
-
-		if (i==0 and position!="bot_right") or (i==n and position=="bot_right"):
-			taxa="Seedbank"
-			y=(top+bot)/2-1
-		else:
-			y=(top+bot)/2-0.5
-			if position=="bot_right":
-				taxa="Taxon "+str(2*len(abundances)-i-4)
-			else:
-				taxa="Taxon "+str(len(abundances)-i)
-		if position=="bot_right" and taxa=="Seedbank":
-			y+=0.5
-		if "left" in position:
-			x=-1.1
-			ha="right"
-		if "right" in position:
-			x=n+0.1
-			ha="left"
-		ax.text(x, y, taxa, ha=ha, fontsize=10)
-		bot=top
-
-
-def draw_landscape(ax, totals, label):
-	print "drawing functional landscape of community..."
-	totals = [totals[0]] + totals + [totals[-1]]
-
-	x=range(len(totals))
-	xnew = np.linspace(min(x),max(x),300)
-	ynew = spline(x, totals, xnew)
+def load_otu_data(inputfile, rank_of_interest):
+	df=pd.read_csv(inputfile, sep='\t', header=1, index_col=0)
+	taxonomy=df["taxonomy"]
+	df = df.drop("taxonomy", 1)
 	
-	for i,x in enumerate(xnew):
-		y=ynew[i]
-		if y<0:
-			return "bad"
-		ax.plot([x,x], [0,y], '-', c="lightgray", alpha=1)
-	ax.plot(xnew, ynew, c="k", linewidth=0.5)
-	ax.scatter(range(1,len(totals[1:-1])+1), totals[1:-1], facecolors='white', edgecolors='k', zorder=10)
-
-	#for xmaj in range(len(totals)+1): ax.axvline(x=xmaj-0.5, ls='--', linewidth=1, alpha=0.1, c="k")
-	ax.get_xaxis().set_visible(False)
-	ax.get_yaxis().set_ticks([])
-	plt.axis("off")
-	ax.set_xlim([0, n_functions+1])
-	ax.set_ylim([-5, max(ynew)+5])
-	modify_spines(ax)
-	ax.set_title("Functional landscape "+label, fontsize=14)
-	ttl = ax.title
-	ttl.set_position([.5, 1.0])
-
-
-def draw_connections(ax, before_coord, after_coord, colors):
-	print "drawing lines connecting showing abundance changes..."
-	for i,before in enumerate(before_coord):
-		after = after_coord[i]
-		coordinates=[	(0,before[0]-0.5),
-				(1,after[0]-0.5),
-				(1,after[1]-0.5),
-				(0,before[1]-0.5)]
-		trap = Polygon(coordinates)
-		patch = PolygonPatch(trap, facecolor=colors[i], linewidth=1, edgecolor="white", alpha=0.5)
-		ax.add_patch(patch)
-	plt.axis('off')
-
-
-def compute_distance(list1, list2):
-	dist=0
-	for i, a in enumerate(list1):
-		b=list2[i]
-		dist+=abs(a-b)
-	return dist
-
-
-def brute_force_rearrangement(totals, n_species, old_organisms, distance_max):
-	print "generating random community of equivalent functional potential..."
-	n=0; best_dist=1000
-	while True:
-		n+=1
-		organisms = generate_cells(n_species-2, len(totals), silent=True) + old_organisms[:2]
-		abundances = generate_abundances(len(organisms), silent=True)
-		abundances[-3] += abundances[-1]-3
-		abundances[-4] += abundances[-2]-4
-		abundances[-1] -= abundances[-1]-3
-		abundances[-2] -= abundances[-2]-4
-		
-		new_totals=[]
-		for i in totals: new_totals.append(0)
-		for i,org in enumerate(organisms):
-			a=abundances[i]
-			for f in org:
-				new_totals[f]+=a
-
-		if compute_distance(totals, new_totals)<best_dist:
-			best_totals = new_totals[:]
-			best_abundances = abundances[:]
-			best_organisms = organisms[:]
-			best_dist = compute_distance(totals, new_totals)
-		if n%10000==0:
-			if best_dist<distance_max:
-				break
-		if n==500000:
-			break
-	return best_organisms, best_abundances
-		
-
-def get_rearrangement_coordinates(new_organisms, new_abundances, max_y):
-	print "calculating coordinates for lines representing rearrangement adundance changes..."
-	rear_before=[]
-	rear_after=[]
-	y=0
-	for i,org in enumerate(new_organisms):
-		rear_before.append([float(i)/len(new_organisms)+1,float(i+1)/len(new_organisms)+1])
-		rear_after.append([y, y+new_abundances[i]])
-		y+=new_abundances[i]
+	df = standardize_otu_table(df, 100)
+	df = group_otus_by_taxa(df, rank_of_interest, taxonomy)
+	return df
 	
-	scaling = float(rear_after[-1][-1])/(max_y-1)
-	scaling=1
-	for i in range(len(rear_after)):
-		rear_after[i][0] = int(rear_after[i][0]/scaling+1)
-		rear_after[i][1] = int(rear_after[i][1]/scaling+1)
-	#rear_after[-1][-1]-=1
-	return rear_before, rear_after
+def calculate_pca(df):
+	samples=list(df.index.values)
+
+	pca = PCA(n_components=2)
+	principalComponents = pca.fit_transform(df)
+	principalDf = pd.DataFrame(data = principalComponents, columns = ['component_1', 'component_2'])
+
+	df = df.reset_index()
+	finalDf = pd.concat([principalDf, df[["index"]]], axis = 1)
+	finalDf["component_1"]/=1000
+	finalDf["component_2"]/=1000
+	var = pca.explained_variance_ratio_
+	return finalDf, var, samples
+
+def contig_correlation_statistics(data):
+	comparisons={}
+	for s1 in sorted(data):
+		for s2 in sorted(data):
+			if s1.split("-")[1] == s2.split("-")[1]: continue
+			if int(s1.split("-")[1]) > int(s2.split("-")[1]): continue
+			values1 = data[s1].tolist()
+			values2 = data[s2].tolist()
+			test = stats.pearsonr(values1, values2)
+			comparison = s1.split("-")[1]+"-"+s2.split("-")[1]
+			if comparison not in comparisons: comparisons[comparison]=[]
+			comparisons[comparison].append(test[0])
+	print "\t".join(["comparison 1", "comparison 2", "t-statistic", "p-value"])
+	for i in sorted(comparisons):
+		for j in sorted(comparisons):
+			if i==j: continue
+			if int(i.split("-")[0])>int(j.split("-")[0]): continue
+			test = stats.ttest_ind(comparisons[i], comparisons[j])
+			print "\t".join([i,j,str(test[0]), str(test[1])])
 
 
-def draw_label(ax, label):
-	ax.text(0.5, 0.5, label, ha="center", fontsize=24)
-	ax.axis("off")
+def convert_wideform_to_longform(dictionary):
+	df={"x":[], "y":[]}
+	for key in sorted(dictionary):
+		for element in dictionary[key]:
+			df["x"].append(key.split("-")[0])
+			df["y"].append(element)
+	return df
 
-def draw_grid(ax):
-	ax.set_xlim([0, n_functions+1])
-	for xmaj in range(n_functions+2): ax.axvline(x=xmaj-0.5, ls='--', linewidth=1, alpha=0.12, c="k", zorder=-1)
-	#ax.get_xaxis().set_visible(False)
-	#ax.get_yaxis().set_ticks([])
-	plt.axis("off")
+def load_and_standardize_rearrangements(filename):
+	values=[]; weights=[]
+	for line in open(filename):
+		if line[0]=="#": continue
+		cut=line.strip().split("\t")
+		weights.append(float(cut[0]))
+		values.append(float(cut[1]))
+	maximum=max(weights)
+	out = []
+	for i, val in enumerate(values):
+		weight = int(100*weights[i]/maximum)
+		for j in range(weight):
+			out.append(val)
+	return out, values
+
+def draw_matrix_clustermap(filename, ax, c):
+	folder = os.path.dirname(os.path.realpath(__file__))
+	im = plt.imread(get_sample_data(folder + "/" + filename))
+	ax.imshow(im)
+	ax.xaxis.set_visible(False)
+	ax.set_yticklabels([])
+	for spine in ax.spines.values(): spine.set_visible(False)
+	ax.yaxis.set_ticks_position('none') 
+	ax.set_title("Unweighted dissimilarity clustering", fontsize=title_font)
+	ax.yaxis.labelpad = 0
+	ax.set_ylabel("16S rDNA samples", labelpad=-10)
 
 
-print "\nGENERATING DATA"
+def draw_bin_clustermap(filename, ax, c):
+	folder = os.path.dirname(os.path.realpath(__file__))
+	im = plt.imread(get_sample_data(folder + "/" + filename))
+	ax.imshow(im)
+	ax.xaxis.set_visible(False)
+	ax.set_yticklabels([])
+	for spine in ax.spines.values(): spine.set_visible(False)
+	ax.yaxis.set_ticks_position('none')
+	ax.set_title("MAG abundance clustering", fontsize=title_font)
+	ax.set_ylabel("Metagenome-assembled genomes", labelpad=-0)
 
-# random generation seed
-seed = None
-seed = 4013758737
 
-#core parameters
-n_species=8; n_functions=8
-fig = plt.figure(figsize=(10, 10))
+def draw_contig_pca(finalDf, var, samples, c):
+	ax.set_title("PCA of contig abundance", fontsize=title_font)
+	ax.set_xlabel('PC1 (variance explained = '+ str(var[0]*100)[:4]+"%")
+	ax.set_ylabel('PC2 (variance explained = '+ str(var[1]*100)[:4]+"%")
+	ax.grid()
+
+	colors={}; i=0
+	for sample in sorted(samples):
+		label = "-".join(sample.split("-")[1:2])
+		if label not in colors:
+			colors[label]=c[i]
+			i+=1
+	for i in finalDf.index:
+		x = finalDf["component_1"][i]
+		y = finalDf["component_2"][i]
+		sample = "-".join(finalDf["index"][i].split("-")[1:2])
+		color=colors[sample]
+		ax.scatter(x, y, c=color, s=50, edgecolors='k', marker="o", linewidth=0.5)
+	for spine in ax.spines.values(): spine.set_alpha(0.2)
+	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
+
+
+
+def draw_violins(data, ax, c):
+	c.append(c[0])
+	samples=["2014", "2015", "2016", "2017"]
+	for s, sample in enumerate(samples):
+		df={"x":[], "y":[], "z":[]}
+		for i in range(len(data["x"])):
+			if data["x"][i]==sample:
+				df["z"].append("before")
+				df["z"].append("after")
+				for j in range(2):
+					df["x"].append(data["x"][i])
+					df["y"].append(data["y"][i])
+		for excluded in samples:
+			if excluded==sample: continue
+			for j in range(2):
+				df["x"].append(excluded)
+				df["y"].append(-1)
+			df["z"].append("before")
+			df["z"].append("after")
+		sns.violinplot(x="x", y='y', data=df, width=1, linewidth=1.5, ax=ax, split=True, hue="z", palette=["white", "white"])
+		#sns.violinplot(x="x", y='y', data=df, width=1, linewidth=1, ax=ax, split=True, hue="z", palette=[c[s], c[s+1]])
+
+	ax.set_xticklabels(["2014>2015", "2015>2016", "2016>2017", "2017>2014"])
+	for tick in ax.get_xticklabels(): tick.set_rotation(20)
+	ax.set_ylabel("Taxonomic turnover within gene categories")
+	ax.set_ylim(0, 1.05)
+	ax.set_xlim(-0.7, 3.7)
+	ax.legend_.remove()
+	ax.set_title("Taxonomic rearrangement", fontsize=title_font)
+	for spine in ax.spines.values(): spine.set_alpha(0.2)
+	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
+	plt.setp(ax.artists, edgecolor = 'k', facecolor='w')
+	plt.setp(ax.lines, color='k')
+
+
+
+
+def draw_signifficance_bars(df, ax):
+	h=96
+	for s1 in sorted(data):
+		for s2 in sorted(data, reverse=True):
+			if s1==s2: continue
+			if int(s1.split("-")[0])>int(s2.split("-")[0]): continue
+			test=stats.ks_2samp(data[s1], data[s2])
+			if test.pvalue > 0.01: continue
+			elif test.pvalue > 0.001: m='*'
+			elif test.pvalue > 0.0001: m='**'
+			else: m='***'
+
+			print s1, s2, m, test
+			x_st = int(s1.split("-")[0])-2014
+			x_fi = int(s2.split("-")[0])-2014
+			ax.hlines(y=h, xmin=x_st, xmax=x_fi, linewidth=1, color='k')
+			ax.vlines(x=x_st, ymin=h-1, ymax=h, linewidth=1, color='k')
+			ax.vlines(x=x_fi, ymin=h-1, ymax=h, linewidth=1, color='k')
+			ax.text(0.95*(x_fi+x_st)/2.0, h-0.5, m)
+			h+=2.5
+
+	ax.text(-0.2, 45, "P-value:\n*   0.01\n**  0.001\n*** 0.0001", fontsize=12)
+
+
+
+##################   START SCRIPT     ######################
+
+
+# main figure layout:
 font = {'family': 'arial', 'weight': 'normal', 'size': 12}
 plt.rc('font', **font)
 
-
-left_border=0.1
-width=0.3
-height=0.35
-landscape_row=0.86
-#top_row=0.47
-#bot_row=0.05
-top_row=0.05
-bot_row=0.47
+plt.rc('font', family='arial')
+sns.set_palette("colorblind")
+#sns.set_style("dark")
+fig = plt.figure(figsize=(10, 10))
+colors=["gold", "cyan", "royalblue", "magenta"]
+title_font=16
 
 
-print '\nPLOTTING THE "BEFORE" STATES'
-while True:
-	if seed==None:
-		s = random.randint(2**32-1)
-	else:
-		s=seed
-	random.seed(s)
-	plt.clf()
-	organisms = generate_cells(n_species, n_functions)
-	n_species=len(organisms)
-	abundances = generate_abundances(len(organisms))
-	colors = generate_colors(len(organisms))
-	
-	ax = fig.add_axes([left_border, top_row, width, height])
-	before_coord, before_totals = draw_dots(ax, organisms, abundances, colors, n_functions, "top_left")
-	
-	ax = fig.add_axes([left_border, bot_row, width, height])
-	before_coord, before_totals = draw_dots(ax, organisms, abundances, colors, n_functions, "bot_left")
-	
-	ax = fig.add_axes([left_border, landscape_row, width, 0.1])
-	state = draw_landscape(ax, before_totals, "before")
-	if state=="bad":
-		print "it would have been an ugly plot anyways... retry\n"
-		continue
-
-	random.shuffle(abundances)
-	ax = fig.add_axes([0.6, top_row, width, height])
-	after_coord, after_totals = draw_dots(ax, organisms, abundances, colors, n_functions, "top_right")
-	change = compute_distance(before_totals, after_totals)
-	if change<40:
-		print "the functional shift was boring (diff="+str(change)+")... retry\n"
-		continue
-	ax = fig.add_axes([0.6, landscape_row, width, 0.1])
-	state = draw_landscape(ax, after_totals, "after")
-	if state=="bad":
-		print "it would have been an ugly plot anyways... retry\n"
-		continue
-	
-	ax = fig.add_axes([0.4, top_row, 0.2, height])
-	draw_connections(ax, before_coord, after_coord, colors)
-	ax.set_ylim(0, sum(abundances)+3)
-	ax.set_title("Slow adjustment (Type II)", fontsize=24)
-	ttl = ax.title
-	ttl.set_position([0.5, 1.0])
-
-	ax = fig.add_axes([0.4, 0.87, 0.2, 0.1])
-	ax.arrow(0.1, 0.5, 0.8, 0, head_width=0.1, head_length=0.05, fc='k', ec='k')
-	plt.axis("off")
-
-	print "\nSattisfactory solution found! (change="+str(change)+")"
-	print("Random seed was:", s)
-	break
+print "plotting OTU dissimilarity matrix..."
+# xmin, ymin, dx, dy
+ax = fig.add_axes([0.045, 0.51, 0.44, 0.44])
+os.system("python cluster_matrix.py unweighted_unifrac_matrix.tab 4 "+" ".join(colors))
+draw_matrix_clustermap("cluster_matrix.png", ax, colors)
+ax.annotate("A", xy=(-0.08, 1.01), xycoords="axes fraction", fontsize=20)
 
 
-
-print "\nPLOTTING RAPID REARRANGEMENT"
-new_organisms, new_abundances = brute_force_rearrangement(after_totals, n_species, organisms, 20)
-new_colors = generate_colors(len(new_organisms)-2, new=True) + colors[:2]
-ax = fig.add_axes([0.6, bot_row, width, height])
-after_coord, new_totals = draw_dots(ax, new_organisms, new_abundances, new_colors, n_functions, "bot_right")
-#ax = fig.add_axes([0.6, 0.35, width, 0.1])
-#draw_landscape(ax, new_totals, "after")
+print "making MAG clustermap..."
+ax = fig.add_axes([0.52, 0.49, 0.48, 0.46])
+os.system("python cluster_mags.py bin_abundances.tab 3.9 4 "+" ".join(colors))
+draw_bin_clustermap("cluster_mags.png", ax, colors)
+ax.annotate("B", xy=(-0.1, 1.01), xycoords="axes fraction", fontsize=20)
 
 
-# plot joining lines
-rear_before, rear_after = get_rearrangement_coordinates(new_organisms, new_abundances, before_coord[-1][-1])
-
-after_coord=[]
-for i in range(len(before_coord)):
-	if i<2:
-		after_coord.append(rear_after[-2+i])
-	else:
-		after_coord.append([before_coord[-1][-1]+float(i)/len(before_coord)-1, before_coord[-1][-1]+float(i+1)/len(before_coord)-1])
-
-rear_before=rear_before[:-2]
-rear_after=rear_after[:-2]
-	
-ax = fig.add_axes([0.4, bot_row, 0.2, height])
-draw_connections(ax, before_coord, after_coord, colors)
-draw_connections(ax, rear_before, rear_after, new_colors)
-ax.set_ylim(0, sum(abundances)+3)
-ax.set_title("Rapid rearrangement (Type I)", fontsize=24)
-ttl = ax.title
-ttl.set_position([.5, 1.0])
+print "making contig abundance PCA..."
+ax = fig.add_axes([0.08, 0.12, 0.38, 0.38])
+df = pd.read_csv("contig_abundances.tab", delimiter="\t", index_col="#contig").T
+df=df.div(df.sum(axis=1)*0.000001, axis=0)
+finalDf, var, samples = calculate_pca(df)
+contig_correlation_statistics(df.T)
+draw_contig_pca(finalDf, var, samples, colors)
+ax.annotate("C", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
 
 
-# plot backgorund grid lines
-ax = fig.add_axes([left_border, 0.81, width, 0.15])
-draw_grid(ax)
-ax = fig.add_axes([0.6, 0.81, width, 0.15])
-draw_grid(ax)
-ax = fig.add_axes([left_border, 0.39, width, 0.06])
-draw_grid(ax)
-ax = fig.add_axes([0.6, 0.39, width, 0.06])
-draw_grid(ax)
+print "making rearrangment violin plots"
+ax = fig.add_axes([0.56, 0.12, 0.4, 0.38])
+os.system("python calculate_rearrangements.py 0")
+comparisons=["2014-2015", "2015-2016", "2016-2017", "2017-2014"]
+data={}; raw={}
+for comparison in comparisons:
+	data[comparison], raw[comparison] = load_and_standardize_rearrangements(comparison+".tab")
+df = convert_wideform_to_longform(data)
+draw_violins(df, ax, colors)
+draw_signifficance_bars(raw, ax)
+ax.annotate("D", xy=(-0.18, 1.01), xycoords="axes fraction", fontsize=20)
 
 
-# draw panel labels
-ax = fig.add_axes([0, 0.92, 0.05, 0.05])
-draw_label(ax, "A")
-
-ax = fig.add_axes([0, 0.8, 0.05, 0.05])
-draw_label(ax, "B")
-
-ax = fig.add_axes([0, 0.38, 0.05, 0.05])
-draw_label(ax, "C")
-
-
-print "\nFINISHED"
-#plt.savefig("figure_3e.png", dpi=300)
-plt.savefig("random_"+str(s)+".png", dpi=300)
-plt.savefig("figure_3.png", dpi=300)
-plt.savefig("figure_3.eps", dpi=300)
-plt.show()
+print "making legend..."
+ax = fig.add_axes([0.0, 0.0, 1, 0.05])
+ax.axis("off")
+legend_elements = [Patch(facecolor=colors[0], edgecolor='k', label='2014', linewidth=1),
+        Patch(facecolor=colors[1], edgecolor='k', label='2015', linewidth=1),
+        Patch(facecolor=colors[2], edgecolor='k', label='2016', linewidth=1),
+        Patch(facecolor=colors[3], edgecolor='k', label='2017', linewidth=1)]
+ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=True, facecolor='w', ncol=4, columnspacing=1, handlelength=1, prop={'size': 16})
 
 
-
+#plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
+plt.savefig("figure_4.png", dpi=600)
+#plt.savefig("figure_4.eps", dpi=600)
+plt.grid()
+#plt.show()
 
 
 
