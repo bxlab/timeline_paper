@@ -313,7 +313,7 @@ def draw_signifficance_bars(df, ax, inc_mod=1):
 			elif test.pvalue > 0.0001: m='**'
 			else: m='***'
 			ax.hlines(y=h, xmin=x_st, xmax=x_fi, linewidth=1, color='k')
-			ax.text((x_fi+x_st)/2.0, h-inc/3, m, ha='center', fontsize=10)
+			ax.text((x_fi+x_st)/2, h-inc/1.5, m, ha='center', fontsize=12)
 			h+=inc
 
 

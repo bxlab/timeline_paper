@@ -1,86 +1,161 @@
 #!/usr/bin/env python
-import sys
-import numpy as np
+print "loading python packages"
+import sys, getopt, os
 import pandas as pd
-import matplotlib
-import seaborn as sns; sns.set(color_codes=True)
+import scipy.stats as stats
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
-sns.set_palette("colorblind")
-plt.rc('font', family='arial')
+import matplotlib.gridspec as gridspec
+from matplotlib.patches import Patch
+import seaborn as sns
+sns.set_color_codes()
+import operator as op
+import numpy as np
+import math
+from PIL import Image
 
+#standardize each sample to number of reads in each sample (to 10000 reads per sample)
+def standardize_otu_table(df, reads):
+	df/=df.sum()
+	df*=reads
+	return df
 
+# group OTUs by taxonomy
+def group_otus_by_taxa(df, rank, taxonomy):
+	taxonomy_rank=int(rank)
+	taxa_otus={}
+	for otu in taxonomy.index.values:
+	        if len(taxonomy[otu].split(";"))<taxonomy_rank+1:
+	                taxa = "Unknown"
+	        else:
+	                taxa = taxonomy[otu].split(";")[taxonomy_rank].strip().split("_")[-1]
+	        if taxa not in taxa_otus: taxa_otus[taxa]=[]
+	        taxa_otus[taxa].append(otu)
 
-
-def load_bin_data(filename):
-	z=pd.read_csv(filename, sep='\t', index_col=0)
-	z = z.div(z.sum(axis=0), axis=1)
-	z=1000000*z
-	z=z+0.01
-	df = np.log(z)
+	for taxa in taxa_otus:
+	        for otu in taxa_otus[taxa]:
+	                #rename the index in otu table to taxa
+	                df=df.rename(index={otu: taxa})
+	#collapse rows with same taxonomy
+	df=df.groupby(df.index).sum()
 	return df
 
 
-def color_labels(df):
-	# add colored x-labels
-	colors=["gold", "cyan", "royalblue", "magenta"]
-	lut=[]
-	for sample in df.columns.values:
-	        if "2014" in sample: lut.append(colors[0])
-	        elif "2015" in sample: lut.append(colors[1])
-	        elif "2016" in sample: lut.append(colors[2])
-	        elif "2017" in sample: lut.append(colors[3])
-		else: lut.append('w')
-	return lut
+def load_taxa_data(df, taxa):
+	timeline={}
+        for sample in df.columns.values:
+                year=sample.split("-")[2]+'-'+sample.split("-")[3][:2]
+                if year not in timeline: timeline[year]=[]
+                timeline[year].append(df.at[taxa, sample])
+	return timeline
 
 
-def load_taxa(filename):
-	taxonomy={}
-	for line in open(filename):
-		cut = line.strip().split("\t")
-		bin=cut[1]
-		taxa=cut[2]
-		taxonomy[bin]=taxa
-	return taxonomy	
+def load_otu_data(inputfile, rank_of_interest):
+	df=pd.read_csv(inputfile, sep='\t', header=1, index_col=0)
+	taxonomy=df["taxonomy"]
+	df = df.drop("taxonomy", 1)
+	
+	df = standardize_otu_table(df, 100)
+	df = group_otus_by_taxa(df, rank_of_interest, taxonomy)
+	return df
+	
+
+def convert_lists_to_df(x,y,labels):
+	df = pd.DataFrame({'labels': labels,'x': x,'y': y})
+	return df
 
 
-def filter_by_taxa(data, taxonomy):
-	df = pd.DataFrame()
-	for bin,row in data.iterrows():
-		taxa=taxonomy[bin]
-		if "Cyanobacteria" in taxa:
-			bin = taxa.split(";")[-1] +" ("+bin+")"
-			if "Total" not in df:
-				df["Total"] = row
-			df[bin] = row
-			df["Total"]+=row
-	df.sort_index(axis=0, inplace=True)
-	out = pd.DataFrame()
-	for sample,row in df.iterrows():
-		cut = sample.split("-")
-		sample = cut[1]+"-"+cut[3]
-		out[sample] = row
+def draw_boxplots(data, taxa, ax, col):
+	keys=[]; values=[]; pal={}
+	for i, key in enumerate(sorted(data)):
+		keys.append(key)
+		values.append(data[key])
+                if key=="2016-02": c=col[0]
+                if key=="2016-07": c=col[1]
+                if key=="2016-10": c=col[2]
+                if key=="2017-02": c=col[3]
+                pal[i]=c
+
+	sns.boxplot(data=values, width=0.60, linewidth=1, ax=ax, palette=pal)
+	sns.swarmplot(data=values, size=4, edgecolor="black", linewidth=1, ax=ax, palette=pal)
+
+	ax.set_xticklabels(keys)
+	for tick in ax.get_xticklabels(): tick.set_rotation(30)
+	for spine in ax.spines.values(): spine.set_alpha(0.2)
+	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
 
 
-	out.drop(["Total"], axis=0, inplace=True)
-	return out
+def get_max_min_in_dict(dictionary):
+	maxs=[]; mins=[]
+	for key in dictionary:
+		maxs.append(max(dictionary[key]))
+		mins.append(min(dictionary[key]))
+	return max(maxs), min(mins)
+
+
+def draw_signifficance_bars(df, ax, inc_mod=1):
+	max_val,min_val = get_max_min_in_dict(df)
+	h = (max_val-min_val)*1.1 + min_val
+	inc = (h-min_val)*0.05*inc_mod
+
+	for x_st,s1 in enumerate(sorted(df)):
+		for x_fi,s2 in enumerate(sorted(df)):
+			s1_tot=float(s1.split("-")[0]) + float(s1.split("-")[0])/10
+			s2_tot=float(s2.split("-")[0]) + float(s2.split("-")[0])/10
+			if s1>=s2: continue
+			test=stats.ttest_ind(df[s1], df[s2])
+			if test.pvalue > 0.01: continue
+			elif test.pvalue > 0.001: m='*'
+			elif test.pvalue > 0.0001: m='**'
+			else: m='***'
+			ax.hlines(y=h, xmin=x_st, xmax=x_fi, linewidth=0.5, color='k')
+			ax.text((x_fi+x_st)/2.0, h-inc/1.5, m, ha='center', fontsize=10)
+			h+=inc
 
 
 
+##################   START SCRIPT     ######################
 
-data = load_bin_data("bin_abundances.tab")
-taxonomy = load_taxa("bin_info.txt")
-df = filter_by_taxa(data, taxonomy)
-lut = color_labels(df)
+# main figure layout:
+font = {'family': 'arial', 'weight': 'normal', 'size': 10}
+plt.rc('font', **font)
+fig = plt.figure(figsize=(5, 5))
+title_font=14
+colors=["royalblue", "cyan", "magenta", "red"]
 
 
-sns.set(font_scale=1)
-g = sns.clustermap(df, figsize=(10,5), col_colors=lut, col_cluster=False, row_cluster=False, yticklabels=["SG1_Halothece_65_4","SG1_Euhalothece_44_8","SG1_Halothece_48_229"], xticklabels=True, vmin=0, cmap="magma")
-plt.setp(g.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
+main = fig.add_subplot(111)
+#main.set_title("Taxa abundance recovery post-rain", fontsize=title_font, y=1.1)
+main.set_ylabel("Relative taxa abundance (%)", labelpad=20)
+main.xaxis.set_visible(False)
+main.set_yticklabels([])
+for spine in main.spines.values(): spine.set_visible(False)
+main.yaxis.set_ticks_position('none')
 
-g.ax_heatmap.set_title("Abundance of Cyanobacteria MAGs", y=1.1, fontsize=14)
-plt.savefig("figure_S4.png", dpi=600, bbox_inches="tight")
-#plt.savefig("figure_S4.eps", dpi=600, bbox_inches="tight")
-#plt.show()
+print "making phyla abundance plot"
+taxa_of_interest=["Cyanobacteria","Chloroplast","Cytophagia","Halobacteria"]	
+df = load_otu_data("otu_table.tab", 2)
+taxa_data={}
+for taxa in taxa_of_interest: 
+	taxa_data[taxa]=load_taxa_data(df, taxa)
+
+labels=["A","B","C","D"]
+for i, taxa in enumerate(taxa_data):
+	letter=labels[i]
+	#if i>1: i=i+2
+	ax = fig.add_subplot(2,2,i+1)
+	if i<2: ax.get_xaxis().set_ticks([])
+	ax.annotate(letter, xy=(-0.15, 1.03), xycoords="axes fraction", fontsize=title_font)
+	if taxa=="Cytophagia": name="Bacteroidetes"
+	else: name=taxa
+	ax.set_title(name, fontsize=title_font)
+	data=taxa_data[taxa]
+	draw_boxplots(data, taxa, ax, colors)
+	draw_signifficance_bars(data, ax)
+	if i<2: ax.get_xaxis().set_ticklabels(["","","",""])
+
+
+plt.tight_layout(rect=[-0.04, -0.0, 1, 1])
+plt.savefig("figure_S4.png", dpi=600)
+
 
 
