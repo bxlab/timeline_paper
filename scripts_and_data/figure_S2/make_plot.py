@@ -1,222 +1,196 @@
 #!/usr/bin/env python
-print "loading python packages"
+print "loading python packages..."
 import sys, getopt, os
-import pandas as pd
-import scipy.stats as stats
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-from matplotlib.patches import Patch
-import seaborn as sns
-sns.set_color_codes()
-import operator as op
 import numpy as np
 import math
-from PIL import Image
 
 
-def load_pca_coord(filename):
-	pc1=[]; pc2=[]; labels=[]	
-	for i,line in enumerate(open(filename)):
-		cut=line.strip().split("\t")
-		if i==4:
-			expl_1=float(cut[0])
-			expl_2=float(cut[1])
-		if i>8:
-			if len(cut)<10: continue
-			pc1.append(float(cut[1]))
-			pc2.append(float(cut[2]))
-			labels.append("-".join(cut[0].split("-")[2:4])[:7])
-	return expl_1,expl_2,pc1,pc2,labels
+def inches_to_cm(inch):
+	return inch * 25.4
+
+def F_to_C (temp):
+	return (temp-32.0)*5.0/9.9
 
 
-#standardize each sample to number of reads in each sample (to 10000 reads per sample)
-def standardize_otu_table(df, reads):
-	df/=df.sum()
-	df*=reads
-	return df
-
-
-# group OTUs by taxonomy
-def group_otus_by_taxa(df, rank, taxonomy):
-	taxonomy_rank=int(rank)
-	taxa_otus={}
-	for otu in taxonomy.index.values:
-	        if len(taxonomy[otu].split(";"))<taxonomy_rank+1:
-	                taxa = "Unknown"
-	        else:
-	                taxa = taxonomy[otu].split(";")[taxonomy_rank].strip().split("_")[-1]
-	        if taxa not in taxa_otus: taxa_otus[taxa]=[]
-	        taxa_otus[taxa].append(otu)
-
-	for taxa in taxa_otus:
-	        for otu in taxa_otus[taxa]:
-	                #rename the index in otu table to taxa
-	                df=df.rename(index={otu: taxa})
-	#collapse rows with same taxonomy
-	df=df.groupby(df.index).sum()
-	return df
-
-
-def load_taxa_data(df, taxa):
-	timeline={}
-        for sample in df.columns.values:
-                year=sample.split("-")[2]+'-'+sample.split("-")[3][:2]
-                if year not in timeline: timeline[year]=[]
-                timeline[year].append(df.at[taxa, sample])
-	return timeline
-
-
-def load_otu_data(inputfile, rank_of_interest):
-	df=pd.read_csv(inputfile, sep='\t', header=1, index_col=0)
-	taxonomy=df["taxonomy"]
-	df = df.drop("taxonomy", 1)
-
-	df = standardize_otu_table(df, 100)
-	df = group_otus_by_taxa(df, rank_of_interest, taxonomy)
-	return df
-
-
-def convert_lists_to_df(x,y,labels):
-	df = pd.DataFrame({'labels': labels,'x': x,'y': y})
-	return df
-
-
-def draw_pcoa(PC1_expl, PC2_expl, df, ax, col):
-	plots={}
-	for i,label in enumerate(df["labels"]):
-		if "2014" in label: c=col[0]
-		if "2015" in label: c=col[1]
-		if "2016" in label: c=col[2]
-		if "2017" in label: c=col[3]
-		plots[label] = ax.scatter(df['x'][i], df['y'][i], c=c, edgecolors='k', marker='o', s=50, linewidth=0.5)
+def load_data(filename):
+	points=[]
+	years=[]
+	months=[]
+	dates=[]
+	max_temps=[]
+	min_temps=[]
+	max_humis=[]
+	min_humis=[]
+	precips=[]
 	
-	#ax.legend((plots["2014-09"],plots["2015-06"],plots["2016-02"],plots["2017-02"]),
-	#	("2014-09","2015-06","2016-02","2017-02"), columnspacing=1, handlelength=0,
-	#	numpoints=1, loc='upper left', ncol=2, framealpha=1, frameon=True, facecolor='w')
-
-	for spine in ax.spines.values(): spine.set_alpha(0.2)
-	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
-
-
-def draw_boxplots(data, taxa, ax, col):
-	keys=[]; values=[]; pal={}
-	for i, key in enumerate(sorted(data)):
-		keys.append(key)
-		values.append(data[key])
-		if "2014" in key: pal[i]=col[0]
-		if "2015" in key: pal[i]=col[1]
-		if "2016" in key: pal[i]=col[2]
-		if "2017" in key: pal[i]=col[3]
-
-	sns.boxplot(data=values, width=0.60, linewidth=1, ax=ax, palette=pal)
-	sns.swarmplot(data=values, size=4, edgecolor="black", linewidth=1, ax=ax, palette=pal)
-
-	ax.set_xticklabels(keys)
-	for tick in ax.get_xticklabels(): tick.set_rotation(30)
-	for spine in ax.spines.values(): spine.set_alpha(0.2)
-	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
-
-
-def get_max_min_in_dict(dictionary):
-        maxs=[]; mins=[]
-        for key in dictionary:
-                maxs.append(max(dictionary[key]))
-                mins.append(min(dictionary[key]))
-        return max(maxs), min(mins)
-
-
-def draw_signifficance_bars(df, ax, inc_mod=1):
-	max_val,min_val = get_max_min_in_dict(df)
-	h = (max_val-min_val)*1.1 + min_val
-	inc = (h-min_val)*0.05*inc_mod
-
-	for x_st,s1 in enumerate(sorted(df)):
-		for x_fi,s2 in enumerate(sorted(df)):
-			s1_tot=float(s1.split("-")[0]) + float(s1.split("-")[0])/10
-			s2_tot=float(s2.split("-")[0]) + float(s2.split("-")[0])/10
-			if s1>=s2: continue
-			test=stats.ttest_ind(df[s1], df[s2])
-			if test.pvalue > 0.01: continue
-			elif test.pvalue > 0.001: m='*'
-			elif test.pvalue > 0.0001: m='**'
-			else: m='***'
-			ax.hlines(y=h, xmin=x_st, xmax=x_fi, linewidth=0.5, color='k')
-			ax.text((x_fi+x_st)/2.0, h-inc/1.5, m, ha='center', fontsize=10)
-			h+=inc
+	ct=0
+	for line in open(filename):
+		cut=line.strip().split("\t")
+		if line.startswith("20") and len(cut[0])==4:
+			year = int(cut[0])
+			continue
+		if cut[1]=="Max":
+			month = cut[0]
+			continue
+		else:
+			date = int(cut[0])
+			ct+=1
+	
+			temp_max = F_to_C(float(cut[1]))
+			temp_min = F_to_C(float(cut[3]))
+		
+			humi_max = float(cut[7])
+			humi_min = float(cut[9])
+		
+			precip = inches_to_cm(float(cut[17]))
+	
+			points.append(ct)		
+			years.append(year)
+			months.append(month)
+			dates.append(date)
+			max_temps.append(temp_max)
+			min_temps.append(temp_min)
+			max_humis.append(humi_max)
+			min_humis.append(humi_min)
+			precips.append(precip)
+			if precip>0:
+				print line.strip()
+	return points, years, months, dates, max_temps, min_temps, max_humis, min_humis, precips
 
 
-###################     START SCRIPT     ######################
+def draw_time_axis(points, years, months, dates, ax):
+	ax.get_yaxis().set_visible(False)
+	ax.set_xticks(points)
+	ax.tick_params(axis=u'both', which=u'both',length=0)
+	ax.set_xticklabels([""]*len(points))
+	
+	colors=["gold", "cyan", "royalblue", "magenta"]
+	for x,year in enumerate(years):
+		c=colors[year-2014]
+		ax.axvline(x=x, c=c)
+	
+	labels={"Jan":None, "Apr":None, "Jul":None, "Oct":None}
+	for x,month in enumerate(months):
+		if dates[x]==1:
+			ax.axvline(x=x, ymin=0.9, ymax=1, c='k')
+			#if month in labels:
+			#	ax.text(x, 0.6, month, rotation=-45)
+		if month=="May" and dates[x]==15:
+			ax.text(x, 0.2, years[x], fontsize=18)
+	ax.text(1100, 0.50, "2017", rotation=90, fontsize=18)
 
-# main figure layout:
-font = {'family': 'arial', 'weight': 'normal', 'size': 10}
+
+def draw_precipitation(points, months, precips, ax):
+	ax.set_xlim(0,len(points))
+	ax.bar(points, precips, width=10)
+	for x,month in enumerate(months):
+		if dates[x]==1:
+			ax.axvline(x=x, c='k', linestyle='--', alpha=0.2, linewidth=0.5)
+	ax.get_xaxis().set_visible(False)
+	ax.set_ylabel("Precipitation (mm)", fontsize=12)
+	ax.set_ylim(0,24)
+	plt.grid(axis="y", linestyle='--', alpha=0.3)
+
+
+def draw_humidity(points, months, max_humis, min_humis, ax):
+	ax.set_xlim(0,len(points))
+	ax.scatter(points, max_humis, s=10, alpha=0.1, c="r")
+	ax.scatter(points, min_humis, s=10, alpha=0.1, c="b")
+	for x,month in enumerate(months):
+		if dates[x]==1:
+			ax.axvline(x=x, c='k', linestyle='--', alpha=0.2, linewidth=0.5)
+	ax.get_xaxis().set_visible(False)
+	ax.set_ylabel("Relative humidity (%)", fontsize=12)
+	ax.set_ylim(0,105)
+	plt.grid(axis="y", linestyle='--', alpha=0.3)
+
+
+def draw_temperature(points, months, max_temps, min_temps, ax):
+	ax.set_xlim(0,len(points))
+	ax.scatter(points, max_temps, s=10, alpha=0.1, c="r")
+	ax.scatter(points, min_temps, s=10, alpha=0.1, c="b")
+	for x,month in enumerate(months):
+		if dates[x]==1:
+			ax.axvline(x=x, c='k', linestyle='--', alpha=0.2, linewidth=0.5)
+	ax.get_xaxis().set_visible(False)
+	ax.set_ylabel("Temperature (Celcius)", fontsize=12)
+	ax.set_ylim(0,34)
+	plt.grid(axis="y", linestyle='--', alpha=0.3)
+
+def add_expeditions(points, days, months, years, ax1, ax2):
+	S1=[]
+	S2=[]
+	for i,x in enumerate(points):
+		day = days[i]
+		month = months[i]
+		year = years[i]
+		if month=="Sep" and year==2014 and day==1:
+			S1.append(x)
+		if month=="Jun" and year==2015 and day==1:
+			S1.append(x)
+		if month=="Feb" and year==2016 and day==8:
+			S1.append(x)
+			S2.append(x)
+		if month=="Feb" and year==2017 and day==20:
+			S1.append(x)
+			S2.append(x)
+		if month=="Jul" and year==2016 and day==11:
+			S2.append(x)
+		if month=="Oct" and year==2016 and day==20:
+			S2.append(x)
+
+	for x in S1:
+		ax1.arrow( x, 0.5, 0.0, 0.2, fc="k", ec="k", width=5, head_width=15, head_length=0.1 , zorder=100)
+	for x in S2:
+		ax2.arrow( x, 5, 0.0, -3, fc="w", ec="k", width=5, head_width=15, head_length=1 , zorder=100)
+			
+
+
+
+
+
+# MAIN START
+font = {'family': 'arial', 'weight': 'normal', 'size': 12}
 plt.rc('font', **font)
 
-sns.set_palette("colorblind")
-fig = plt.figure(figsize=(10, 5))
-colors=["gold", "cyan", "royalblue", "magenta"]
-title_font=14
+print "loading weather data..."
+points, years, months, dates, max_temps, min_temps, max_humis, min_humis, precips = load_data("2014-2017_weather.tab")
 
 
-print "making phyla abundance plot"
-taxa_of_interest=["Cyanobacteria","Chloroplast","Cytophagia","Halobacteria"]
-df = load_otu_data("otu_table.tab", 2)
-taxa_data={}
-for taxa in taxa_of_interest:
-	taxa_data[taxa]=load_taxa_data(df, taxa)
+print "plotting..."
+fig = plt.figure(figsize=(10, 10))
 
-main = fig.add_subplot(121)
-#main.set_title("Taxa abundance recovery post-rain", fontsize=title_font, y=1.1)
-main.set_ylabel("Relative taxa abundance (%)", labelpad=20)
-main.xaxis.set_visible(False)
-main.set_yticklabels([])
-for spine in main.spines.values(): spine.set_visible(False)
-main.yaxis.set_ticks_position('none')
+print "drawing axis..."
+ax1 = fig.add_axes([0.1, 0.05, 0.85, 0.1])
+draw_time_axis(points, years, months, dates, ax1)
 
 
-labels=["A","B","C","D"]
-for i, taxa in enumerate(taxa_data):
-	letter=labels[i]
-	if i>1: i=i+2
-	ax = fig.add_subplot(2,4,i+1)
-	ax.annotate(letter, xy=(-0.16, 1.03), xycoords="axes fraction", fontsize=title_font)
-	if taxa=="Cytophagia": name="Bacteroidetes"
-	else: name=taxa
-	ax.set_title(name, fontsize=title_font)
-	data=taxa_data[taxa]
-	draw_boxplots(data, taxa, ax, colors)
-	draw_signifficance_bars(data, ax)
-	if i<2: ax.get_xaxis().set_ticklabels(["","","",""])
-	else: ax.get_xaxis().set_ticklabels(["2014","2015", "2016", "2017"])
+print "drawing precipitation..."
+ax2 = fig.add_axes([0.1, 0.15, 0.85, 0.2])
+draw_precipitation(points, months, precips, ax2)
+ax2.annotate("C", xy=(-0.08, 0.95), xycoords="axes fraction", fontsize=26)
 
 
-print "making PCoA plot..."
-ax = fig.add_subplot(122)
-PC1_expl,PC2_expl,PC1,PC2,labels = load_pca_coord("weighted_unifrac_pcoa.txt")
-df = convert_lists_to_df(PC1, PC2, labels)
-draw_pcoa(PC1_expl, PC2_expl, df, ax, colors)
-
-ax.set_xlabel("PC1 ("+str(int(100*PC1_expl))+"% of variation explained)")
-ax.set_ylabel("PC2 ("+str(int(100*PC2_expl))+"% of variation explained)")
-ax.set_title("PCoA of Weighted Unifrac matrix", fontsize=title_font)
-ax.annotate("E", xy=(-0.15, 1.02), xycoords="axes fraction", fontsize=title_font)
+print "drawing humidity..."
+ax3 = fig.add_axes([0.1, 0.35, 0.85, 0.3])
+draw_humidity(points, months, max_humis, min_humis, ax3)
+ax3.annotate("B", xy=(-0.08, 0.95), xycoords="axes fraction", fontsize=26)
 
 
-print "making legend..."
-ax = fig.add_axes([0.0, 0.0, 1, 0.05])
-ax.axis("off")
-legend_elements = [Patch(facecolor=colors[0], edgecolor='k', label='2014', linewidth=1),
-        Patch(facecolor=colors[1], edgecolor='k', label='2015', linewidth=1),
-        Patch(facecolor=colors[2], edgecolor='k', label='2016', linewidth=1),
-        Patch(facecolor=colors[3], edgecolor='k', label='2017', linewidth=1)]
-ax.legend(handles=legend_elements, loc="lower center", frameon=True,
-	framealpha=1, facecolor='w', ncol=4, columnspacing=1, handlelength=1,
-	prop={'size': 12}, fontsize=12)
+print "drawing temperature..."
+ax4 = fig.add_axes([0.1, 0.65, 0.85, 0.3])
+draw_temperature(points, months, max_temps, min_temps, ax4)
+ax4.annotate("A", xy=(-0.08, 0.95), xycoords="axes fraction", fontsize=26)
 
 
+print "adding sampling dates..."
+add_expeditions(points, dates, months, years, ax1, ax2)
 
-#plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
-plt.tight_layout(w_pad=-1, rect=[-0.02, 0.06, 1, 1])
+
+plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)
+#plt.savefig("figure_2.eps", dpi=600)
 plt.savefig("figure_S2.png", dpi=600)
-
+#plt.show()
 
 

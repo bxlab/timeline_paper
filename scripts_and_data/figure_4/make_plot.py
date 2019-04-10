@@ -148,8 +148,8 @@ def draw_bin_clustermap(filename, ax, c):
 
 def draw_contig_pca(finalDf, var, samples, c):
 	ax.set_title("PCA of contig abundance", fontsize=title_font)
-	ax.set_xlabel('PC1 (variance explained = '+ str(var[0]*100)[:4]+"%")
-	ax.set_ylabel('PC2 (variance explained = '+ str(var[1]*100)[:4]+"%")
+	ax.set_xlabel('PC1 (variance explained = '+ str(var[0]*100)[:4]+"%)")
+	ax.set_ylabel('PC2 (variance explained = '+ str(var[1]*100)[:4]+"%)")
 	ax.grid()
 
 	colors={}; i=0
