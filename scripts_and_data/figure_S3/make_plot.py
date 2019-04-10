@@ -180,6 +180,7 @@ for i, taxa in enumerate(taxa_data):
 	ax = fig.add_subplot(2,4,i+1)
 	ax.annotate(letter, xy=(-0.16, 1.03), xycoords="axes fraction", fontsize=title_font)
 	if taxa=="Cytophagia": name="Bacteroidetes"
+	elif taxa=="Chloroplast": name="Chlorophyta"
 	else: name=taxa
 	ax.set_title(name, fontsize=title_font)
 	data=taxa_data[taxa]
