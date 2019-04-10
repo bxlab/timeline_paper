@@ -1,4 +1,4 @@
-## Development page for the manuscript of "Response of extremophile microbiome to a rare rainfall reveals a two-step adaptation mechanism", aka the Halite Timecourse paper
+## Development page for the manuscript of "Halophilic microbial community following compositional shift after a catastrophic climate eventrare rainfall in the Atacama Desert", aka the Halite Timecourse paper
 
 
 Here you will find the manuscript drafts, processed data files, plotting scripts, and other files associated with the publication of the paper about halite microbiota responce to a rare rain event.
