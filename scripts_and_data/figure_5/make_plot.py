@@ -391,7 +391,7 @@ while True:
 	ax = fig.add_axes([right, bot, width, height])
 	before_coord, before_totals = draw_dots(ax, organisms, abundances, colors, n_functions, labelside="right", seedbank="bot")
 	ax = fig.add_axes([right, bot+height*0.95, width, landscape_height])
-	state = draw_landscape(ax, before_totals, "Transient funcitonal landscape")
+	state = draw_landscape(ax, before_totals, "Transient functional landscape")
 
 
 	if state=="bad":
