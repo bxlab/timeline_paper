@@ -131,7 +131,7 @@ def draw_matrix_clustermap(filename, ax, c):
 	ax.yaxis.set_ticks_position('none') 
 	ax.set_title("Unweighted dissimilarity clustering", fontsize=title_font)
 	ax.yaxis.labelpad = 0
-	ax.set_ylabel("16S rDNA samples", labelpad=-10)
+	ax.set_ylabel("Samples", labelpad=-10)
 
 
 def draw_bin_clustermap(filename, ax, c):
@@ -197,7 +197,7 @@ def draw_violins(data, ax, c):
 	ax.set_ylim(0, 1.05)
 	ax.set_xlim(-0.7, 3.7)
 	ax.legend_.remove()
-	ax.set_title("Taxonomic rearrangement", fontsize=title_font)
+	ax.set_title("Taxonomic turnover", fontsize=title_font)
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
 	plt.setp(ax.artists, edgecolor = 'k', facecolor='w')

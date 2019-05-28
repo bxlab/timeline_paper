@@ -233,7 +233,7 @@ def draw_archaea_percent(data, ax, c):
 	
 	for tick in ax.get_xticklabels(): tick.set_rotation(0)
 	ax.set_ylim(40,105)
-	ax.set_ylabel("Archaea abundance (%) in 16S rDNA")
+	ax.set_ylabel("Archaea abundance (%)")
 	ax.set_title("Relative abundance of Archaea", fontsize=title_font)
 	for spine in ax.spines.values(): spine.set_alpha(0.2)
 	ax.grid(linestyle='--', linewidth=0.5, alpha=0.5)
@@ -249,7 +249,7 @@ def draw_matrix_clustermap(filename, ax, c):
 	ax.yaxis.set_ticks_position('none') 
 	ax.set_title("Weighted dissimilarity clustering", fontsize=title_font)
 	ax.yaxis.labelpad = 0
-	ax.set_ylabel("16S rDNA samples")
+	ax.set_ylabel("Samples")
 
 def draw_pathway_clustermap(filename, ax, c):
 	folder = os.path.dirname(os.path.realpath(__file__))
