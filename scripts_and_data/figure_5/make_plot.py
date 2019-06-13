@@ -482,19 +482,19 @@ draw_label(ax, "Rapid turnover ($\it{Type}$ $\it{I}$)")
 # draw arrows and labels
 ax = fig.add_axes([middle, bot+height, 0.2, landscape_height])
 ax.arrow(0.1, 0.5, 0.8, 0, head_width=0.1, head_length=0.05, fc='k', ec='k')
-ax.text(0.5, 0.6, r"$TTI$=" + str(adjustment_ri)[:4] + r"$\pm$" + str(adjustment_ri_std)[:4], horizontalalignment='center')
+ax.text(0.5, 0.6, r"$TTI$=" + str(rearrangement_ri)[:4] + r"$\pm$" + str(rearrangement_ri_std)[:4], horizontalalignment='center')
 plt.axis("off")
 
 ax = fig.add_axes([middle, top+height, 0.2, landscape_height])
 ax.arrow(0.1, 0.5, 0.8, 0, head_width=0.1, head_length=0.05, fc='k', ec='k')
-ax.text(0.5, 0.6, r"$TTI$=" + str(rearrangement_ri)[:4] + r"$\pm$" + str(rearrangement_ri_std)[:4], horizontalalignment='center')
+ax.text(0.5, 0.6, r"$TTI$=" + str(adjustment_ri)[:4] + r"$\pm$" + str(adjustment_ri_std)[:4], horizontalalignment='center')
 plt.axis("off")
 
 
 print "\nFINISHED"
 #plt.savefig("figure_3e.png", dpi=300)
 plt.savefig("random_"+str(s)+".png", dpi=300)
-plt.savefig("figure_5.png", dpi=600)
+plt.savefig("figure_5.png", dpi=300)
 #plt.savefig("figure_5.eps", dpi=600)
 #plt.show()
 

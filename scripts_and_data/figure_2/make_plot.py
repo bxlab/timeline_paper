@@ -380,7 +380,7 @@ ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=Tru
 
 #plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
 #plt.savefig("figure_2.eps", dpi=600)
-plt.savefig("figure_2.png", dpi=600)
+plt.savefig("figure_2.png", dpi=300)
 plt.grid()
 #plt.show()
 

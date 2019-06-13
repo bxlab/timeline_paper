@@ -293,9 +293,8 @@ legend_elements = [Patch(facecolor=colors[0], edgecolor='k', label='2014', linew
         Patch(facecolor=colors[3], edgecolor='k', label='2017', linewidth=1)]
 ax.legend(handles=legend_elements, loc="lower center", framealpha=1, frameon=True, facecolor='w', ncol=4, columnspacing=1, handlelength=1, prop={'size': 16})
 
-
 #plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.1)	
-plt.savefig("figure_4.png", dpi=600)
+plt.savefig("figure_4.png", dpi=300)
 #plt.savefig("figure_4.eps", dpi=600)
 plt.grid()
 #plt.show()
